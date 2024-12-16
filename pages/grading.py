@@ -1,12 +1,9 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
-from src import pdf_reader, llm_function, process_result
+from src import pdf_reader, llm_function, process_result, generate_eda
 import pandas as pd
 import json
 import os
-
-# --- Page Configuration ---
-st.set_page_config(page_title="Grading Hub", layout="wide")
 
 # Load CSS
 css_path = os.path.join(os.path.dirname(__file__), "../styles/grading_page.css")
@@ -32,8 +29,8 @@ selected_option = option_menu(
         "nav-link": {"class": "option-menu-link"},
         "nav-link-selected": {"class": "option-menu-link-selected"},
     },
-    key="main_option_menu"  # Ensure a unique key for the option menu
-)
+    key="main_option_menu"  
+    )
 
 # Sync Menu with Session State
 st.session_state["selected_option"] = selected_option
@@ -43,7 +40,8 @@ if "uploaded_file" not in st.session_state:
     st.session_state["extracted_content"] = None
 
 if st.session_state["selected_option"] == "Upload Rubric":
-    uploaded_file = st.file_uploader("Upload a PDF file", type="pdf", key="pdf_uploader")
+    st.markdown("<div class='h1'>Step 1: Upload PDF file contains Question, Answer and Grading Rubrics</div>", unsafe_allow_html=True)
+    uploaded_file = st.file_uploader("", type="pdf", key="pdf_uploader")
 
     if uploaded_file is not None:
         if st.session_state["uploaded_file"] != uploaded_file:
@@ -65,7 +63,6 @@ if st.session_state["selected_option"] == "Upload Rubric":
         st.write(st.session_state["rubric_result"])
 
 
-# Render content for "Grade Answer" if selected
 if st.session_state["selected_option"] == "Grade Answer":
     if "uploaded_student_files" not in st.session_state:
         st.session_state["uploaded_student_files"] = []
@@ -82,14 +79,7 @@ if st.session_state["selected_option"] == "Grade Answer":
 
     if st.session_state["uploaded_student_files"]:
         file_names = [uploaded_file.name for uploaded_file in st.session_state["uploaded_student_files"]]
-        selected_file = st.selectbox("Select a file to display its content:", file_names, key="student_file_selector")
 
-        for uploaded_file in st.session_state["uploaded_student_files"]:
-            if uploaded_file.name == selected_file:
-                content = pdf_reader.extract_pdf(uploaded_file)
-                st.write(content)
-
-        # Ensure the question is displayed only once
         if "rubric_result" in st.session_state:
             question = st.session_state["rubric_result"].get("question", "")
             key_elements = st.session_state["rubric_result"].get("key_elements", [])
@@ -123,30 +113,8 @@ if st.session_state["selected_option"] == "Grade Answer":
             results_df = process_result.extract(results_df)
             results_df = results_df.drop(columns=['LLM_Response'])
             st.dataframe(results_df)
-
-
-                
-            #         response = llm_function.grade_student_answer(
-            #             question=question,
-            #             key_elements=key_elements,
-            #             rubric=rubric,
-            #             student_id=student_id,
-            #             student_answer=student_answer
-            #         )
-            #         try:
-            #             grading_result = json.loads(response.strip("```json").strip())
-            #         except json.JSONDecodeError:
-            #             grading_result = {"error": "Failed to parse grading response", "raw_response": response}
-
-            #         results_cot.append({
-            #             "Student ID": student_id,
-            #             "Student Answer": student_answer,
-            #             "Grading Result": grading_result
-            #         })
-
-            # results_df = pd.DataFrame(results_cot)
-            # st.dataframe(results_df)
-
+            generate_eda.visualization_report(results_df)
+            
 
 # Render content based on selected option
 # if selected_option == "Info":
