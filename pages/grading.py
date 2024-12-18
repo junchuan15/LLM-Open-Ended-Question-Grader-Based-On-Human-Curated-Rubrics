@@ -5,19 +5,27 @@ import pandas as pd
 import json
 import os
 
-# Load CSS
+# --- Load CSS ---
 css_path = os.path.join(os.path.dirname(__file__), "../styles/grading_page.css")
 with open(css_path) as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+# --- Session State Initialization ---
+if "selected_option" not in st.session_state:
+    st.session_state["selected_option"] = "Upload Rubric"
+if "uploaded_file" not in st.session_state:
+    st.session_state["uploaded_file"] = None
+if "extracted_content" not in st.session_state:
+    st.session_state["extracted_content"] = None
+if "rubric_result" not in st.session_state:
+    st.session_state["rubric_result"] = None
+if "uploaded_student_files" not in st.session_state:
+    st.session_state["uploaded_student_files"] = []
 
 # --- Title ---
 st.markdown("<div class='title'>Automated Grading System</div>", unsafe_allow_html=True)
 
 # --- Main Menu ---
-if "selected_option" not in st.session_state:
-    st.session_state["selected_option"] = "Upload Rubric"
-
-# Option Menu Rendering
 selected_option = option_menu(
     None,
     ["Upload Rubric", "Grade Answer"],
@@ -29,92 +37,101 @@ selected_option = option_menu(
         "nav-link": {"class": "option-menu-link"},
         "nav-link-selected": {"class": "option-menu-link-selected"},
     },
-    key="main_option_menu"  
-    )
+    key="main_option_menu"
+)
+st.session_state["selected_option"] = selected_option  # Sync selected option with session state
 
-# Sync Menu with Session State
-st.session_state["selected_option"] = selected_option
-
-if "uploaded_file" not in st.session_state:
-    st.session_state["uploaded_file"] = None
-    st.session_state["extracted_content"] = None
-
+# --- Upload Rubric Section ---
 if st.session_state["selected_option"] == "Upload Rubric":
-    st.markdown("<div class='h1'>Step 1: Upload PDF file contains Question, Answer and Grading Rubrics</div>", unsafe_allow_html=True)
-    uploaded_file = st.file_uploader("", type="pdf", key="pdf_uploader")
+    st.markdown("<div class='h1'>Step 1: Upload PDF file containing Questions, Answers, and Grading Rubrics</div>", unsafe_allow_html=True)
 
-    if uploaded_file is not None:
-        if st.session_state["uploaded_file"] != uploaded_file:
-            st.session_state["uploaded_file"] = uploaded_file
-            st.session_state["extracted_content"] = pdf_reader.extract_pdf(uploaded_file)
+    uploaded_file = st.file_uploader(" ", type="pdf", label_visibility="collapsed", key="pdf_uploader")
 
-    if st.session_state["extracted_content"]:
-        extracted_text = st.session_state["extracted_content"] 
-        if extracted_text and "rubric_result" not in st.session_state:
-            response = llm_function.extract_rubric(extracted_text)
-            try:
-                rubric_data = json.loads(response.strip("```json").strip())
-                st.session_state["rubric_result"] = rubric_data
-            except json.JSONDecodeError:
-                st.error("Failed to parse the rubric result. Please check the extracted response.")
-                st.write(response)  
+    if uploaded_file and (st.session_state["uploaded_file"] != uploaded_file):
+        st.session_state["uploaded_file"] = uploaded_file
+        st.session_state["extracted_content"] = pdf_reader.extract_pdf(uploaded_file)
+        st.session_state["rubric_result"] = None  
 
-    if "rubric_result" in st.session_state:
-        st.write(st.session_state["rubric_result"])
+    if st.session_state["extracted_content"] and st.session_state["rubric_result"] is None:
+        extracted_text = st.session_state["extracted_content"]
+        response = llm_function.extract_rubric(extracted_text)
+        try:
+            rubric_data = json.loads(response.strip("```json").strip())
+            st.session_state["rubric_result"] = rubric_data
+        except json.JSONDecodeError:
+            st.error("Failed to parse the rubric result. Please check the extracted response.")
+            st.write(response)
 
+    # Display extracted rubrics
+    if st.session_state["rubric_result"]:
+        st.markdown("### Extracted Questions and Rubrics")
+        for i, question_data in enumerate(st.session_state["rubric_result"], 1):
+            with st.expander(f"Question {i}"):
+                st.json({
+                    "Question": question_data.get("question", "N/A"),
+                    "Key Elements": question_data.get("key_elements", []),
+                    "Rubric": question_data.get("rubric", {})
+                })
 
+# --- Grade Answer Section ---
 if st.session_state["selected_option"] == "Grade Answer":
-    if "uploaded_student_files" not in st.session_state:
-        st.session_state["uploaded_student_files"] = []
-
+    st.markdown("<div class='h1'>Step 2: Upload student answer PDF files (Multiple files allowed)</div>", unsafe_allow_html=True)
+    
     uploaded_files = st.file_uploader(
-        "Upload PDF files for student answers",
+        " ",
         type="pdf",
         accept_multiple_files=True,
+        label_visibility="collapsed",
         key="student_answers_uploader"
     )
 
     if uploaded_files:
         st.session_state["uploaded_student_files"] = uploaded_files
 
-    if st.session_state["uploaded_student_files"]:
-        file_names = [uploaded_file.name for uploaded_file in st.session_state["uploaded_student_files"]]
-
-        if "rubric_result" in st.session_state:
-            question = st.session_state["rubric_result"].get("question", "")
-            key_elements = st.session_state["rubric_result"].get("key_elements", [])
-            rubric = st.session_state["rubric_result"].get("rubric", {})
-
- 
         if st.button("Grade", key="grade_button"):
-            results_cot = []
+
+            results_cot = [] 
 
             for uploaded_file in st.session_state["uploaded_student_files"]:
-                student_id = uploaded_file.name.replace(".pdf", "")  
-                content = pdf_reader.extract_pdf(uploaded_file)
-                student_answer = content if isinstance(content, str) else ""
+                student_id = uploaded_file.name.replace(".pdf", "")
+                content = pdf_reader.extract_pdf(uploaded_file) 
+                student_text = content if isinstance(content, str) else ""
 
-                if "rubric_result" in st.session_state:
-                    response = llm_function.grade_student_answer(
-                        question=question,
-                        key_elements=key_elements,
-                        rubric=rubric,
-                        student_id=student_id,
-                        student_answer=student_answer
-                    )
+                if st.session_state["rubric_result"]:
+                    rubric_result = st.session_state["rubric_result"]
+                    response_aligned = llm_function.extract_student_answers(student_text, rubric_result)
 
-                    results_cot.append({
-                        "Student ID": student_id,
-                        "Student Answer": student_answer,
-                        "LLM_Response": response
-                    })
+                    try:
+                        aligned_answers = json.loads(response_aligned.strip("```json").strip())
+                    except json.JSONDecodeError:
+                        st.error("Failed to parse the aligned answers. Please check the response.")
+                        st.write(response_aligned)
+                        continue
 
+                    for question_data, student_data in zip(rubric_result, aligned_answers):
+                        response = llm_function.grade_student_answer(
+                            question=question_data.get("question", ""),
+                            key_elements=question_data.get("key_elements", []),
+                            rubric=question_data.get("rubric", {}),
+                            student_id=student_id,
+                            student_answer=student_data.get("student_answer", "")
+                        )
+
+                        results_cot.append({
+                            "Student ID": student_id,
+                            "Question": question_data.get("question", ""),
+                            "Student Answer": student_data.get("student_answer", ""),
+                            "LLM_Response": response
+                        })
+
+            # Process and display results
             results_df = pd.DataFrame(results_cot)
-            results_df = process_result.extract(results_df)
-            results_df = results_df.drop(columns=['LLM_Response'])
+            results_df = process_result.process(results_df)            
+            st.markdown("### Grading Results:")
             st.dataframe(results_df)
-            generate_eda.visualization_report(results_df)
-            
+
+        # generate_eda.visualization_report(results_df)
+
 
 # Render content based on selected option
 # if selected_option == "Info":
