@@ -23,7 +23,7 @@ if "uploaded_student_files" not in st.session_state:
     st.session_state["uploaded_student_files"] = []
 
 # --- Title ---
-st.markdown("<div class='title'>Automated Grading System</div>", unsafe_allow_html=True)
+st.markdown("<div class='title'>Welcome to the Grading Hub 📝</div>", unsafe_allow_html=True)
 
 # --- Main Menu ---
 selected_option = option_menu(
@@ -44,7 +44,6 @@ st.session_state["selected_option"] = selected_option  # Sync selected option wi
 # --- Upload Rubric Section ---
 if st.session_state["selected_option"] == "Upload Rubric":
     st.markdown("<div class='h1'>Step 1: Upload PDF file containing Questions, Answers, and Grading Rubrics</div>", unsafe_allow_html=True)
-
     uploaded_file = st.file_uploader(" ", type="pdf", label_visibility="collapsed", key="pdf_uploader")
 
     if uploaded_file and (st.session_state["uploaded_file"] != uploaded_file):
@@ -62,9 +61,8 @@ if st.session_state["selected_option"] == "Upload Rubric":
             st.error("Failed to parse the rubric result. Please check the extracted response.")
             st.write(response)
 
-    # Display extracted rubrics
     if st.session_state["rubric_result"]:
-        st.markdown("### Extracted Questions and Rubrics")
+        st.markdown("<div class='h2'>Questions and Rubrics</div>", unsafe_allow_html=True)
         for i, question_data in enumerate(st.session_state["rubric_result"], 1):
             with st.expander(f"Question {i}"):
                 st.json({
@@ -76,7 +74,7 @@ if st.session_state["selected_option"] == "Upload Rubric":
 # --- Grade Answer Section ---
 if st.session_state["selected_option"] == "Grade Answer":
     st.markdown("<div class='h1'>Step 2: Upload student answer PDF files (Multiple files allowed)</div>", unsafe_allow_html=True)
-    
+
     uploaded_files = st.file_uploader(
         " ",
         type="pdf",
@@ -88,13 +86,14 @@ if st.session_state["selected_option"] == "Grade Answer":
     if uploaded_files:
         st.session_state["uploaded_student_files"] = uploaded_files
 
+    if st.session_state["uploaded_student_files"]:
+        st.markdown("<br>", unsafe_allow_html=True)  
         if st.button("Grade", key="grade_button"):
-
-            results_cot = [] 
+            results_cot = []  
 
             for uploaded_file in st.session_state["uploaded_student_files"]:
                 student_id = uploaded_file.name.replace(".pdf", "")
-                content = pdf_reader.extract_pdf(uploaded_file) 
+                content = pdf_reader.extract_pdf(uploaded_file)
                 student_text = content if isinstance(content, str) else ""
 
                 if st.session_state["rubric_result"]:
@@ -124,16 +123,34 @@ if st.session_state["selected_option"] == "Grade Answer":
                             "LLM_Response": response
                         })
 
-            # Process and display results
             results_df = pd.DataFrame(results_cot)
-            results_df = process_result.process(results_df)            
-            st.markdown("### Grading Results:")
-            st.dataframe(results_df)
+            results_df = process_result.process(results_df)
+            st.session_state["results_df"] = results_df
 
-        # generate_eda.visualization_report(results_df)
+    if st.session_state.get("results_df") is not None:
+        st.markdown("### Grading Results:")
+        st.dataframe(st.session_state["results_df"])
+        csv = st.session_state["results_df"].to_csv(index=False).encode('utf-8')
+        st.download_button(
+            label="Download Results as CSV",
+            data=csv,
+            file_name="grading_results.csv",
+            mime="text/csv",
+            key="download_button"
+        )
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.markdown("### Histogram of Scores")
+            generate_eda.histogram(st.session_state["results_df"])
+
+        with col2:
+            st.markdown("### Boxplot of Scores")
+            generate_eda.boxplot(st.session_state["results_df"])
 
 
-# Render content based on selected option
+
 # if selected_option == "Info":
 #     # --- Info Tab Content ---
 #         col1, col2= st.columns([2, 2])

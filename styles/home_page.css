@@ -1,0 +1,196 @@
+@import url('https://fonts.googleapis.com/css2?family=Bevan:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Jaro:opsz@6..72&family=Lilita+One&family=Sarala:wght@400;700&family=Seymour+One&family=Sigmar&family=Ultra&display=swap');
+
+.h1 {
+    font-size: 36px;
+    font-family: "Lilita One", serif;
+    color: #413c3c;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.logo-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: -3rem;
+}
+
+.logo {
+    max-width: 100%;
+    align-items: center;
+    padding: 0 2rem;
+}
+
+.title-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.title-container span {
+    margin: 0;
+    font-weight: 300;
+
+}
+
+/* Get Started Frame */
+.get-started-frame {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0.5rem;
+}
+
+/* Get Started Container */
+.get-started-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 2.618rem 0 1rem 0;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    animation: bounceDown 1.5s infinite ease-in-out;
+}
+
+.get-started-container span {
+    font-family: monospace;
+    margin: 0;
+    margin-bottom: -0.8rem;
+    padding: 0;
+    color: inherit;
+    font-weight: 300;
+}
+
+.get-started-arrow {
+    font-size: 2rem;
+    animation: bounceArrow 1.5s infinite ease-in-out;
+}
+
+/* Hover Effect */
+.get-started-container:hover {
+    animation: none;
+    color: var(--red);
+    opacity: 0.8;
+}
+
+.get-started-arrow:hover {
+    color: var(--red);
+    animation: none;
+}
+
+/* Bounce Animation for Arrow */
+@keyframes bounceArrow {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(10px);
+    }
+}
+
+/* Key Features  */
+.features-grid-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 2rem; 
+    width: 100%;
+    max-width: 1200px; 
+    margin: 2rem auto;
+}
+
+.feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.2rem;
+    width: 100%;
+    padding: 1.4rem;
+    border-left: 4px solid rgb(46, 43, 58);
+    border-radius: 8px; 
+    background-color: rgba(255, 255, 255, 0.062); 
+    box-shadow: 0 4px 6px rgba(175, 173, 173, 0.205); 
+    transition: all 0.3s ease-in-out; 
+}
+
+/* Hover Effects */
+.feature-item:hover {
+    background: rgba(46, 43, 58, 0.1);
+    transform: translateY(-3px); 
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15); 
+}
+
+.feature-item .feature-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.feature-item .feature-content .feature-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #2c2c2c;
+}
+
+/* Feature Description */
+.feature-item .feature-content .feature-desc {
+    font-size: 1rem;
+    color: #474747;
+    text-align: justify;
+    line-height: 1.5;
+}
+
+/* Objectives */
+.objectives-container {
+    display: flex;
+    flex-wrap: wrap; 
+    width: 100%;
+    justify-content: center; 
+    row-gap: 2rem; 
+    column-gap: 2rem; 
+    margin: 1rem 0 2rem 0; 
+}
+
+.objectives-container .card {
+    width: 25rem; 
+    height: 10rem;
+    display: flex;
+    flex-direction: column; 
+    justify-content: space-between;
+    align-items: flex-start; 
+    border: 2.5px solid rgba(43, 41, 48, 0.425);
+    border-radius: 8px;
+    padding: 1rem; 
+    transition: all 0.2s ease-in-out; 
+    transform-origin: center center; 
+    background-color: #ffffff8a; 
+    box-shadow: 0 6px 12px rgba(27, 2, 139, 0.288); 
+}
+
+.objectives-container .card:hover {
+    transform: scale(1.07); 
+    border: 2px solid rgb(72, 69, 83); 
+    box-shadow: 0 8px 16px rgba(27, 2, 139, 0.363); 
+}
+
+.objectives-container .card .card-text {
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.3rem; 
+}
+
+.objectives-container .card .card-text .card-title {
+    margin: 0;
+    padding: 0;
+    font-weight: bold; 
+    font-size: 1.2rem; 
+}
+
+.objectives-container .card .card-text .card-desc {
+    margin: 0;
+    font-size: 1.05rem; 
+    color: #474747;
+    text-align: justify;
+}
+
+

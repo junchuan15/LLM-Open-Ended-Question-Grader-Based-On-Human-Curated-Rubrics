@@ -2,22 +2,18 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
 
-def score_histogram(df):
+def histogram(df):
     plt.figure(figsize=(8, 5))
-    plt.hist(df['Score'], bins=range(min(df['Score']), max(df['Score']) + 2), edgecolor='black', color='skyblue')
-    plt.title("Histogram of Scores")
-    plt.xlabel("Score")
-    plt.ylabel("Frequency")
+    sns.histplot(df['Total_Score'], bins=10, kde=True, color='Skyblue', alpha=0.7)
+    plt.title('Student Score Distribution', fontsize=16)
+    plt.xlabel('Total Score', fontsize=14)
+    plt.ylabel('Frequency', fontsize=14)
     plt.grid(axis='y', linestyle='--', alpha=0.7)
     st.pyplot(plt)
 
-def score_boxplot(df):
+def boxplot(df):
     plt.figure(figsize=(8, 5))
-    sns.boxplot(x=df['Score'], color='lightgreen')
-    plt.title("Box Plot of Scores")
-    plt.xlabel("Score")
+    sns.boxplot(x=df['Total_Score'], color='skyblue')
+    plt.title("Box Plot of Total Scores")
+    plt.xlabel("Total_Score")
     st.pyplot(plt)
-
-def visualization_report(df):
-    score_histogram(df)
-    score_boxplot(df)

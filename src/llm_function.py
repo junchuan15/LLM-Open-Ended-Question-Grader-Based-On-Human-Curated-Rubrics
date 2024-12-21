@@ -74,7 +74,6 @@ def grade_student_answer(question, key_elements, rubric, student_id, student_ans
         {
             "role": "user",
             "content": f"""
-            Your task involves analyzing the students' answer step by step to find matching key elements are matched and provide an accurate score based on the rubrics.
             Question: {question}
             Key Elements: {key_elements}
             Rubrics: {rubric}
@@ -105,7 +104,6 @@ def grade_student_answer(question, key_elements, rubric, student_id, student_ans
                         "Matching Answer": "No match"
                     }}
                 ],
-                "Total Matched Key Elements": <number of matched key elements>
                 "Score": <score>,
                 "Explanation": "<brief explanation for the score>"
             }}
