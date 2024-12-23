@@ -1,13 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Bevan:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Jaro:opsz@6..72&family=Lilita+One&family=Sarala:wght@400;700&family=Seymour+One&family=Sigmar&family=Ultra&display=swap');
 
 .h1 {
-    font-size: 36px;
+    font-size: 40px;
     font-family: "Lilita One", serif;
     color: #413c3c;
     text-align: center;
     margin-bottom: 20px;
 }
 
+/* Logo Container */
 .logo-container {
     width: 100%;
     display: flex;
@@ -22,25 +23,50 @@
     padding: 0 2rem;
 }
 
+/* Title Container */
 .title-container {
     width: 100%;
     display: flex;
     flex-direction: column;
+    text-align: center;
 }
 
-.title-container span {
-    margin: 0;
-    font-weight: 300;
-
+.title-container .title-text {
+    font-size: 2rem;
+    font-weight: bold;
+    font-style: italic;
 }
 
+.title-container .title-text .red-pen {
+    font-size: 3.5rem;
+    color: rgba(255, 0, 0, 0.726);
+    font-family: "Lilita One", sans-serif;
+}
+
+.title-container .title-text .green-clicks {
+    font-size: 3.5rem;
+    color: rgba(0, 128, 0, 0.788);
+    font-family: "Lilita One", sans-serif;
+}
+
+.title-container .title-description {
+    font-size: 1.6rem;
+    color: #474747;
+    text-align: center;
+    line-height: 1.5;
+    margin-top: 1rem;
+    font-style: italic;
+    max-width: 1300px;
+    margin-left: auto;
+    margin-right: auto;
+}
 /* Get Started Frame */
 .get-started-frame {
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 0.5rem;
+    margin-top: 1.5rem; /* Adjust spacing for balance */
 }
 
 /* Get Started Container */
@@ -48,46 +74,37 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 2.618rem 0 1rem 0;
-    transition: all 0.2s ease-in-out;
-    cursor: pointer;
-    animation: bounceDown 1.5s infinite ease-in-out;
-}
-
-.get-started-container span {
-    font-family: monospace;
-    margin: 0;
-    margin-bottom: -0.8rem;
-    padding: 0;
-    color: inherit;
-    font-weight: 300;
+    margin: 2rem 0; /* Spacing remains consistent */
+    transition: transform 0.2s ease-in-out; /* Add transform for hover effect */
+    cursor: pointer; /* Indicates clickability */
 }
 
 .get-started-arrow {
-    font-size: 2rem;
-    animation: bounceArrow 1.5s infinite ease-in-out;
-}
-
-/* Hover Effect */
-.get-started-container:hover {
-    animation: none;
-    color: var(--red);
-    opacity: 0.8;
+    font-size: 3rem; 
+    text-decoration: none;
+    color: #2e2e2e; 
+    animation: bounce 1.5s infinite ease-in-out; 
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3); 
 }
 
 .get-started-arrow:hover {
-    color: var(--red);
-    animation: none;
+    color: #150e6d; 
+    transform: scale(1.3); 
+    text-shadow: 2px 2px 6px rgba(21, 14, 109, 0.5); 
 }
 
-/* Bounce Animation for Arrow */
-@keyframes bounceArrow {
+/* Bounce Animation */
+@keyframes bounce {
     0%, 100% {
-        transform: translateY(0);
+        transform: translateY(0); 
     }
     50% {
-        transform: translateY(10px);
+        transform: translateY(10px); 
     }
+}
+
+html {
+    scroll-behavior: smooth; 
 }
 
 /* Key Features  */
@@ -163,7 +180,7 @@
     padding: 1rem; 
     transition: all 0.2s ease-in-out; 
     transform-origin: center center; 
-    background-color: #ffffff8a; 
+    background-color: #f3f3f3; 
     box-shadow: 0 6px 12px rgba(27, 2, 139, 0.288); 
 }
 

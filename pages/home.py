@@ -22,20 +22,28 @@ logo = get_base64_image(img_path = 'assets/logo1200.png')
 
 
 st.markdown(f'''
-    <div class="title-container">
-        <div class="logo-container">
-            <img src="data:image/png;base64,{logo}" class="logo" alt="Logo">
-        </div>
-        <span>Grady</span>
-            <div class="get-started-frame">
-                <div class="get-started-container">
-                    <span class="get-started-arrow">↓↓↓</span>
-                </div>
-            </div>
+<div class="title-container">
+    <div class="logo-container">
+        <img src="data:image/png;base64,{logo}" class="logo" alt="Logo">
     </div>
-    ''', unsafe_allow_html=True)
+    <span class="title-text">
+        Replace Your <strong class="red-pen">Red Pen ✍️</strong> with Just a <strong class="green-clicks">Few Simple Clicks 🖱️</strong>
+    </span>
+        <p class="title-description">
+        <strong>Meet Grady – Your Trusted AI-Powered Grading Assistant.</strong>
+        Leveraging the power of Large Language Model (LLM), transforms your grading experience on open-ended questions by reducing manual workload, ensuring fairness, and personalizing assessments to match your unique needs.
+    </p>
+    <div class="get-started-frame">
+        <div class="get-started-container">
+            <a href="#key-features" class="get-started-arrow">↓</a>
+        </div>
+    </div>
+</div>
+''', unsafe_allow_html=True)
+
 
 st.markdown("""
+<div id="key-features" style="margin-top: 3rem;">
     <div class='h1'>
      Key Features
      </div>
@@ -83,19 +91,19 @@ st.markdown("""
         <div class="card">
             <div class='card-text'>
                 <span class='card-title'>01.</span>
-                <span class='card-desc'>To develop an LLM-based automated grading system for evaluating open-ended questions using human-curated rubrics.</span>
+                <span class='card-desc'>To <b>develop</b> an LLM-based automated grading system for evaluating open-ended questions using human-curated rubrics.</span>
             </div>
         </div>
         <div class="card">
             <div class='card-text'>
                 <span class='card-title'>02.</span>
-                <span class='card-desc'>To evaluate the performance of the LLM-based grading model across different prompting techniques.</span>
+                <span class='card-desc'>To <b>evaluate</b> the performance of the LLM-based grading model across different prompting techniques.</span>
             </div>
         </div>
         <div class="card">
             <div class='card-text'>
                 <span class='card-title'>03.</span>
-                <span class='card-desc'>To visualize student performance on the grading results using Exploratory Data Analysis (EDA).</span>
+                <span class='card-desc'>To <b>visualize</b> student performance on the grading results using Exploratory Data Analysis (EDA).</span>
             </div>
         </div>
     </div>

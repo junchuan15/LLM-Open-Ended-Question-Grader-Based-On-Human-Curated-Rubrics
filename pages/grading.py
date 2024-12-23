@@ -28,52 +28,85 @@ st.markdown("<div class='title'>Welcome to the Grading Hub 📝</div>", unsafe_a
 # --- Main Menu ---
 selected_option = option_menu(
     None,
-    ["Upload Rubric", "Grade Answer"],
+    ["Upload Rubric", "Grade Answer", "Visualization"],
     menu_icon=None,
-    default_index=["Upload Rubric", "Grade Answer"].index(st.session_state["selected_option"]),
+    default_index=0,
     orientation="horizontal",
     styles={
-        "container": {"class": "option-menu-container"},
-        "nav-link": {"class": "option-menu-link"},
-        "nav-link-selected": {"class": "option-menu-link-selected"},
+        "container": {
+            "padding": "5px",
+            "background-color": "#f8f7fdbd",
+            "border": "2px solid #616163",
+            "width": "100%",
+            "max-width": "1100px",
+            "margin": "3 auto",
+        },
+        "nav-link": {
+            "font-size": "18px",
+            "text-align": "center",
+            "margin": "3px",
+            "padding": "5px",
+            "color": "#2e2e2f",
+            "cursor": "pointer",
+            "transition": "background-color 0.3s ease",
+        },
+        "nav-link-selected": {
+            "background-color": "#e0e0ff",
+            "font-weight": "bold",
+        },
     },
-    key="main_option_menu"
 )
-st.session_state["selected_option"] = selected_option  # Sync selected option with session state
+st.session_state["selected_option"] = selected_option  
 
 # --- Upload Rubric Section ---
 if st.session_state["selected_option"] == "Upload Rubric":
-    st.markdown("<div class='h1'>Step 1: Upload PDF file containing Questions, Answers, and Grading Rubrics</div>", unsafe_allow_html=True)
-    uploaded_file = st.file_uploader(" ", type="pdf", label_visibility="collapsed", key="pdf_uploader")
+    st.markdown("<div class='h1'>Step 1: Create Assessment</div>", unsafe_allow_html=True)
 
-    if uploaded_file and (st.session_state["uploaded_file"] != uploaded_file):
-        st.session_state["uploaded_file"] = uploaded_file
-        st.session_state["extracted_content"] = pdf_reader.extract_pdf(uploaded_file)
-        st.session_state["rubric_result"] = None  
+    if "assessment_name" not in st.session_state:
+        st.session_state["assessment_name"] = ""
 
-    if st.session_state["extracted_content"] and st.session_state["rubric_result"] is None:
-        extracted_text = st.session_state["extracted_content"]
-        response = llm_function.extract_rubric(extracted_text)
-        try:
-            rubric_data = json.loads(response.strip("```json").strip())
-            st.session_state["rubric_result"] = rubric_data
-        except json.JSONDecodeError:
-            st.error("Failed to parse the rubric result. Please check the extracted response.")
-            st.write(response)
+    assessment_name = st.text_input(
+        "",
+        label_visibility="collapsed",
+        value=st.session_state["assessment_name"],
+        placeholder="Enter the course code (e.g., WIA2001 DATABASE)"
+    )
+    st.markdown("")
+          
+    if assessment_name:
+        st.session_state["assessment_name"] = assessment_name
+        st.markdown("<div class='h1'>Step 2: Upload PDF file containing Questions, Answers, and Grading Rubrics</div>", unsafe_allow_html=True)
+        uploaded_file = st.file_uploader(" ", type="pdf", label_visibility="collapsed", key="pdf_uploader")
 
-    if st.session_state["rubric_result"]:
-        st.markdown("<div class='h2'>Questions and Rubrics</div>", unsafe_allow_html=True)
-        for i, question_data in enumerate(st.session_state["rubric_result"], 1):
-            with st.expander(f"Question {i}"):
-                st.json({
-                    "Question": question_data.get("question", "N/A"),
-                    "Key Elements": question_data.get("key_elements", []),
-                    "Rubric": question_data.get("rubric", {})
-                })
+        if uploaded_file and (st.session_state["uploaded_file"] != uploaded_file):
+            st.session_state["uploaded_file"] = uploaded_file
+            st.session_state["extracted_content"] = pdf_reader.extract_pdf(uploaded_file)
+            st.session_state["rubric_result"] = None  
+
+        if st.session_state["extracted_content"] and st.session_state["rubric_result"] is None:
+            extracted_text = st.session_state["extracted_content"]
+            response = llm_function.extract_rubric(extracted_text)
+            try:
+                rubric_data = json.loads(response.strip("```json").strip())
+                st.session_state["rubric_result"] = rubric_data
+            except json.JSONDecodeError:
+                st.error("Failed to parse the rubric result. Please check the extracted response.")
+                st.write(response)
+
+        if st.session_state["rubric_result"]:
+            st.markdown(f"#### Questions and Rubrics")
+            for i, question_data in enumerate(st.session_state["rubric_result"], 1):
+                with st.expander(f"Question {i}"):
+                    st.json({
+                        "Question": question_data.get("question", "N/A"),
+                        "Marks Allocation": question_data.get("marks_allocation", "N/A"),
+                        "Key Elements": question_data.get("key_elements", []),
+                        "Rubric": question_data.get("rubric", {})
+                    })
 
 # --- Grade Answer Section ---
 if st.session_state["selected_option"] == "Grade Answer":
-    st.markdown("<div class='h1'>Step 2: Upload student answer PDF files (Multiple files allowed)</div>", unsafe_allow_html=True)
+    st.markdown("<div class='h1'>Step 3: Upload student answer PDF files (Multiple files allowed)</div>", unsafe_allow_html=True)
 
     uploaded_files = st.file_uploader(
         " ",
@@ -119,6 +152,7 @@ if st.session_state["selected_option"] == "Grade Answer":
                         results_cot.append({
                             "Student ID": student_id,
                             "Question": question_data.get("question", ""),
+                            "Marks Allocation": question_data.get("marks_allocation", ""),
                             "Student Answer": student_data.get("student_answer", ""),
                             "LLM_Response": response
                         })
@@ -128,62 +162,63 @@ if st.session_state["selected_option"] == "Grade Answer":
             st.session_state["results_df"] = results_df
 
     if st.session_state.get("results_df") is not None:
-        st.markdown("### Grading Results:")
-        st.dataframe(st.session_state["results_df"])
-        csv = st.session_state["results_df"].to_csv(index=False).encode('utf-8')
-        st.download_button(
-            label="Download Results as CSV",
-            data=csv,
-            file_name="grading_results.csv",
-            mime="text/csv",
-            key="download_button"
-        )
+        results_df = st.session_state["results_df"]
+        student_ids = results_df["Student ID"].unique()
+        st.markdown("<div class='h1'>View Results", unsafe_allow_html=True)
+        selected_student_id = st.selectbox("Select a Student ID:", student_ids)
+        st.markdown('<hr class="divider">', unsafe_allow_html=True)
 
+        if selected_student_id:
+            student_data = results_df[results_df["Student ID"] == selected_student_id]
+            st.markdown(f"#### Results for Student ID: {selected_student_id}")
+            st.markdown('<hr class="divider">', unsafe_allow_html=True)
+            process_result.display(student_data, selected_student_id)                      
+            st.markdown('<hr class="divider">', unsafe_allow_html=True)
+            if st.session_state.get("results_df") is not None:
+                csv = st.session_state["results_df"].to_csv(index=False).encode('utf-8')
+                download_file_name = f"{st.session_state['assessment_name']}_grading_results.csv" if st.session_state["assessment_name"] else "grading_results.csv"
+                
+                st.download_button(
+                    label="Download Results as CSV",
+                    data=csv,
+                    file_name=download_file_name,
+                    mime="text/csv",
+                    key="download_button"
+                )
+
+# --- Visualization Section ---
+if st.session_state["selected_option"] == "Visualization":
+    st.markdown("<div class='h1'>Step 4: Visualization</div>", unsafe_allow_html=True)
+    
+    if st.session_state.get("results_df") is None:
+        st.warning("No grading results available. Please complete the grading process first.")
+    else:
+        results_df = st.session_state["results_df"]
         col1, col2 = st.columns(2)
 
         with col1:
-            st.markdown("### Histogram of Scores")
+            st.markdown("""
+            <div class="chart-container">
+                <div class="chart-title">Student Score Distribution</div>
+            """, unsafe_allow_html=True)
+
             generate_eda.histogram(st.session_state["results_df"])
+            st.markdown("</div>", unsafe_allow_html=True)
 
         with col2:
-            st.markdown("### Boxplot of Scores")
+            st.markdown("#### Boxplot of Scores")
             generate_eda.boxplot(st.session_state["results_df"])
+        
+        st.markdown("### Marks Allocation vs. Total Score")
+        if "Total_Marks_Allocation" in results_df.columns and "Total_Score" in results_df.columns:
+            st.area_chart(
+                data=results_df[["Total_Marks_Allocation", "Total_Score"]],
+                use_container_width=True,
+            )
+        
+        st.markdown("### Data Table")
+        st.dataframe(results_df, use_container_width=True)
 
 
-
-# if selected_option == "Info":
-#     # --- Info Tab Content ---
-#         col1, col2= st.columns([2, 2])
-
-#         with col1:
-#             institute = st.text_input("Institute", "(institute)")
-#             department = st.text_input("Department", "(department)")
-#             date = st.date_input("Date")
-            
-#         with col2:
-#             course_code = st.text_input("Course Code", "(course title)")
-#             course_title = st.text_input("Course Title", "(course title)")
-            
-#         # Grade Thresholds Table
-#         st.write("Grade Thresholds")
-#         data = {
-#             "Grade": ["A", "B", "C", "D", "Fail"],
-#             "Mark": [90, 80, 70, 50, 0],
-#         }
-#         df = pd.DataFrame(data)
-#         edited_df = st.data_editor(df, num_rows="dynamic", use_container_width=True)
-
-#         # Buttons for adding or removing rows
-#         st.markdown(
-#             """
-#             <div style="display: flex; justify-content: space-between;">
-#                 <button style="padding: 10px 20px; background-color: #f63366; border: none; color: white; cursor: pointer;">
-#                     + Add row
-#                 </button>
-#                 <button style="padding: 10px 20px; background-color: #555; border: none; color: white; cursor: pointer;">
-#                     - Remove row
-#                 </button>
-#             </div>
-#             """,
-#             unsafe_allow_html=True,
-#         )
+        
+        
