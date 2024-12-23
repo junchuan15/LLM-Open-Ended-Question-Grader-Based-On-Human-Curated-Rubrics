@@ -31,7 +31,7 @@ def organize_result(df):
     df["Question_Label"] = "Q" + df["Question_Index"].astype(str)
 
     pivot_df = df.pivot(index="Student ID", columns="Question_Label", 
-                                values=["Question", "Marks Allocation", "Student Answer", "Key Element Matching", "Score", "Explanation"])  # Corrected spelling
+                                values=["Question", "Marks Allocation", "Student Answer", "Key Element Matching", "Score", "Explanation"])  
 
     pivot_df.columns = [f"{col[1]}_{col[0]}" for col in pivot_df.columns]
     pivot_df.reset_index(inplace=True)

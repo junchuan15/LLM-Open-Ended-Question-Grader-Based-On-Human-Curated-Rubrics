@@ -16,6 +16,21 @@
     margin-bottom: 10px;
 }
 
+.h2 {
+    font-size: 28px;
+    font-weight: bold;
+    color: #2e2e2f;
+    text-align: right;
+    margin-bottom: 10px;
+}
+
+.divider {
+    border: none;
+    border-top: 1px solid #a8a8a8;
+    margin: 0.5rem 0;
+    width: 100%;
+}
+
 /* Grade Button */
 .st-key-grade_button button {
     background-color: #3f3ff7 !important;
@@ -52,30 +67,36 @@
     color: white ;
 }
 
-.divider {
-    border: none;
-    border-top: 1px solid #a8a8a8;
-    margin: 0.5rem 0;
-    width: 100%;
-}
-
-/* Container for chart and title */
-.chart-container {
-    background-color: #f8f9fa;
-    padding: 20px;
+.metric-card {
+    background-color: #f8f9fa54;
     border: 1px solid #ddd;
-    border-radius: 10px;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-    width: 100%;
+    border-radius: 8px;
+    padding: 10px;
     text-align: center;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    margin: 10px auto; 
+    width: 100%; 
+    max-width: 300px; 
 }
 
-/* Chart Title Styling */
-.chart-title {
-    font-size: 16px;
-    font-weight: bold;
-    color: #2c3e50;
-    margin-bottom: 10px;
+.metric-card:hover {
+    transform: scale(1.05);
+    box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.15);
 }
+
+.metric-title {
+    font-size: 1em;
+    font-weight: bold;
+    color: #2e2e2f;
+    margin-bottom: 5px;
+}
+
+.metric-value {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #5555f3;
+}
+
+
 

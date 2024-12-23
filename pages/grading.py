@@ -66,7 +66,7 @@ if st.session_state["selected_option"] == "Upload Rubric":
         st.session_state["assessment_name"] = ""
 
     assessment_name = st.text_input(
-        "",
+        " ",
         label_visibility="collapsed",
         value=st.session_state["assessment_name"],
         placeholder="Enter the course code (e.g., WIA2001 DATABASE)"
@@ -188,36 +188,46 @@ if st.session_state["selected_option"] == "Grade Answer":
 
 # --- Visualization Section ---
 if st.session_state["selected_option"] == "Visualization":
-    st.markdown("<div class='h1'>Step 4: Visualization</div>", unsafe_allow_html=True)
-    
     if st.session_state.get("results_df") is None:
         st.warning("No grading results available. Please complete the grading process first.")
     else:
         results_df = st.session_state["results_df"]
+        # Example DataFrame
+        col1, col2 = st.columns([5,1])
+        with col1:
+            st.markdown(f"<div class='h1'>Assessment: {st.session_state['assessment_name']}</div>", unsafe_allow_html=True)
+        with col2:
+            st.markdown(f"<div class='h1'>({results_df['Total_Marks_Allocation'].mean()} Marks)</div>", unsafe_allow_html=True)
+
+        st.markdown("####Total Students Evaluated: {results_df.shape[0]}")
+        metrics = generate_eda.calculate_metrics(results_df)  
+        for i in range(0, len(metrics), 3):
+            cols = st.columns(3)
+            for col, (title, value) in zip(cols, metrics[i:i+3]):
+                with col:
+                    st.markdown(
+                        f"""
+                        <div class="metric-card">
+                            <div class="metric-title">{title}</div>
+                            <div class="metric-value">{value}</div>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
+
+                        
+        generate_eda.scoretable(results_df)
         col1, col2 = st.columns(2)
 
         with col1:
-            st.markdown("""
-            <div class="chart-container">
-                <div class="chart-title">Student Score Distribution</div>
-            """, unsafe_allow_html=True)
-
-            generate_eda.histogram(st.session_state["results_df"])
-            st.markdown("</div>", unsafe_allow_html=True)
+            generate_eda.histogram(results_df)
 
         with col2:
-            st.markdown("#### Boxplot of Scores")
-            generate_eda.boxplot(st.session_state["results_df"])
+            generate_eda.boxplot(results_df)
         
-        st.markdown("### Marks Allocation vs. Total Score")
-        if "Total_Marks_Allocation" in results_df.columns and "Total_Score" in results_df.columns:
-            st.area_chart(
-                data=results_df[["Total_Marks_Allocation", "Total_Score"]],
-                use_container_width=True,
-            )
         
-        st.markdown("### Data Table")
-        st.dataframe(results_df, use_container_width=True)
+        generate_eda.areachart(results_df)
+    
 
 
         
