@@ -1,12 +1,29 @@
 @import url('https://fonts.googleapis.com/css2?family=Bevan:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Jaro:opsz@6..72&family=Lilita+One&family=Sarala:wght@400;700&family=Seymour+One&family=Sigmar&family=Ultra&display=swap');
 
+.title-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+.title-container img {
+    width: 180px;
+    height: 180px;
+}
+.title {
+    font-size: 75px;
+    font-weight: bold;
+    font-family: "Lilita One", sans-serif;
+    text-align: center;
+}
+
 .section {
     display: flex;
     align-items: flex-start;
     margin-bottom: 20px;
 }
 .number {
-    background-color: #ffbe5c;
+    background-color: #f3b04b;
     color: white;
     font-size: 18px;
     font-weight: bold;
@@ -22,7 +39,7 @@
 .content {
     flex-grow: 1;
 }
-.title {
+.header {
     font-size: 22px;
     font-weight: bold;
     color: #2e2e2f;
@@ -41,7 +58,9 @@
 }
 
 .image img {
-    max-width: 100%;
+    width: 100%; 
+    max-width: 100%; 
+    height: auto; 
     border-radius: 20px;
     box-shadow: 4px 4px 10px rgba(122, 122, 122, 0.767);
     border: 1.5px solid #4b4a48; 
