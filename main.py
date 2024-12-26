@@ -13,10 +13,10 @@ home_page = st.Page(
     default=True,
 )
 
-user_manual_page = st.Page(
-    page="pages/user_manual.py",
-    title="User Manual",
-    icon=":material/menu_book:",
+model_page = st.Page(
+    page="pages/model_info.py",
+    title="Model Info",
+    icon=":material/robot:",
 )
 
 grading_page = st.Page(
@@ -25,16 +25,16 @@ grading_page = st.Page(
     icon=":material/rubric:",
 )
 
-model_page = st.Page(
-    page="pages/model_info.py",
-    title="Model Info",
-    icon=":material/robot:",
+user_manual_page = st.Page(
+    page="pages/user_manual.py",
+    title="User Manual",
+    icon=":material/menu_book:",
 )
 # --- NAVIGATION SETUP ---
 main = st.navigation(
     {
-        "Overview": [home_page, user_manual_page],
-        "Get Started": [grading_page, model_page],
+        "Overview": [home_page, model_page],
+        "Get Started": [grading_page, user_manual_page],
     }
 )
 main.run()

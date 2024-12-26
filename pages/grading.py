@@ -1,6 +1,6 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
-from src import pdf_reader, llm_function, process_result, generate_eda
+from src import loader, llm_function, process_result, generate_eda
 import pandas as pd
 import json
 import os
@@ -60,7 +60,7 @@ st.session_state["selected_option"] = selected_option
 
 # --- Upload Rubric Section ---
 if st.session_state["selected_option"] == "Upload Rubric":
-    st.markdown("<div class='h1'>Step 1: Create Assessment</div>", unsafe_allow_html=True)
+    st.markdown("<div class='h1'>Create Assessment</div>", unsafe_allow_html=True)
 
     if "assessment_name" not in st.session_state:
         st.session_state["assessment_name"] = ""
@@ -75,12 +75,12 @@ if st.session_state["selected_option"] == "Upload Rubric":
           
     if assessment_name:
         st.session_state["assessment_name"] = assessment_name
-        st.markdown("<div class='h1'>Step 2: Upload PDF file containing Questions, Answers, and Grading Rubrics</div>", unsafe_allow_html=True)
+        st.markdown("<div class='h1'>Upload PDF file containing Questions, Answers, and Grading Rubrics</div>", unsafe_allow_html=True)
         uploaded_file = st.file_uploader(" ", type="pdf", label_visibility="collapsed", key="pdf_uploader")
 
         if uploaded_file and (st.session_state["uploaded_file"] != uploaded_file):
             st.session_state["uploaded_file"] = uploaded_file
-            st.session_state["extracted_content"] = pdf_reader.extract_pdf(uploaded_file)
+            st.session_state["extracted_content"] = loader.extract_pdf(uploaded_file)
             st.session_state["rubric_result"] = None  
 
         if st.session_state["extracted_content"] and st.session_state["rubric_result"] is None:
@@ -106,7 +106,7 @@ if st.session_state["selected_option"] == "Upload Rubric":
 
 # --- Grade Answer Section ---
 if st.session_state["selected_option"] == "Grade Answer":
-    st.markdown("<div class='h1'>Step 3: Upload student answer PDF files (Multiple files allowed)</div>", unsafe_allow_html=True)
+    st.markdown("<div class='h1'>Upload Answer PDF files (Multiple Files Allowed)</div>", unsafe_allow_html=True)
 
     uploaded_files = st.file_uploader(
         " ",
@@ -126,7 +126,7 @@ if st.session_state["selected_option"] == "Grade Answer":
 
             for uploaded_file in st.session_state["uploaded_student_files"]:
                 student_id = uploaded_file.name.replace(".pdf", "")
-                content = pdf_reader.extract_pdf(uploaded_file)
+                content = loader.extract_pdf(uploaded_file)
                 student_text = content if isinstance(content, str) else ""
 
                 if st.session_state["rubric_result"]:

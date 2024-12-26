@@ -1,6 +1,20 @@
+import base64
 import PyPDF2
 import pdfplumber
 
+def load_image(img_path):
+    with open(img_path, "rb") as img_file:
+        return base64.b64encode(img_file.read()).decode("utf-8")
+    
+def display_pdf(file_path):
+    with open(file_path, "rb") as f:
+        pdf = f.read()
+        base64_pdf = base64.b64encode(pdf).decode("utf-8")
+        pdf_display = f"""
+        <iframe src="data:application/pdf;base64,{base64_pdf}" width="100%" height="1000px" style="border: none;"></iframe>
+        """
+        return pdf_display
+        
 def extract_pdf(file_obj):
     if isinstance(file_obj, str):
         pdfFileObj = open(file_obj, 'rb')

@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Bevan:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Jaro:opsz@6..72&family=Lilita+One&family=Sarala:wght@400;700&family=Seymour+One&family=Sigmar&family=Ultra&display=swap');
+
+.section {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+.number {
+    background-color: #ffbe5c;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    min-width: 35px; 
+    min-height: 35px; 
+    text-align: center;
+    margin-right: 10px;
+}    
+.content {
+    flex-grow: 1;
+}
+.title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #2e2e2f;
+    margin-bottom: 5px;
+}
+.description {
+    font-size: 18px;
+    color: rgb(88, 88, 88)e2f;
+    line-height: 1.6;
+    text-align: justify;
+}
+
+.image {
+    margin: 15px 0;
+    text-align: center;
+}
+
+.image img {
+    max-width: 100%;
+    border-radius: 20px;
+    box-shadow: 4px 4px 10px rgba(122, 122, 122, 0.767);
+    border: 1.5px solid #4b4a48; 
+    padding: 5px; 
+    margin-bottom: 20px;
+}

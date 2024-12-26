@@ -1,25 +1,13 @@
 import streamlit as st
 import os 
-import base64
-import matplotlib.pyplot as plt
-import seaborn as sns
-import pandas as pd
+from src import loader
 
 # --- Load CSS ---
 css_path = os.path.join(os.path.dirname(__file__), "../styles/home_page.css")
 with open(css_path) as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-def get_base64_image(img_path):
-    try:
-        with open(img_path, "rb") as img_file:
-            return base64.b64encode(img_file.read()).decode("utf-8")
-    except Exception as e:
-        st.error(f"Error loading image: {e}")
-        return None
-
-logo = get_base64_image(img_path = 'assets/logo1200.png')
-
+logo = loader.load_image(img_path = 'assets/logo.bg.png')
 
 st.markdown(f'''
 <div class="title-container">
