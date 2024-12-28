@@ -13,9 +13,9 @@ home_page = st.Page(
     default=True,
 )
 
-model_page = st.Page(
-    page="pages/model_info.py",
-    title="Model Info",
+project_page = st.Page(
+    page="pages/project_info.py",
+    title="Project Info",
     icon=":material/robot:",
 )
 
@@ -33,7 +33,7 @@ user_manual_page = st.Page(
 # --- NAVIGATION SETUP ---
 main = st.navigation(
     {
-        "Overview": [home_page, model_page],
+        "Overview": [home_page, project_page],
         "Get Started": [grading_page, user_manual_page],
     }
 )

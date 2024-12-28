@@ -41,7 +41,7 @@ section (1,"Create a New Assessment",
 
 section (2,"Upload Rubric", 
          """Click the 'Browse files' button to upload the rubric file (.pdf) from your local machine. Ensure the rubric includes the following details: 
-            questions, mark allocations, sample answers, and rubrics with descriptions for each mark distribution. It is important 
+            open-ended questions, mark allocations, sample answers, and rubrics with descriptions for each mark distribution. It is important 
             that the rubric provides clear criteria for grading. Multiple questions can be included in a single file, but each question's rubric must 
             be well-organized and easy to identify. You may tick the checkbox below to view the sample of rubric file format.""", 
          loader.load_image(img_path = 'assets/step2.png'))
@@ -81,7 +81,7 @@ section(6, "View Grading Result",
 section(7, "Download Result", 
         """After reviewing the grading results, users can download the results in CSV format for their records. 
         Click the "Download" button to save the results, which include all the evaluated details for each uploaded answer.""", 
-        loader.load_image(img_path='assets/step8.png'))
+        loader.load_image(img_path='assets/step7.png'))
 
 section(8, "Visualize Result", 
         """Users can navigate to the 'Visualization' tab to view the graphs and charts generated based on the overall total score results for the uploaded answers. 

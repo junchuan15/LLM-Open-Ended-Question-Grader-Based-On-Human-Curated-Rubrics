@@ -14,7 +14,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: -3rem;
+    margin-top: 1.5rem;
 }
 
 .logo {
@@ -53,7 +53,7 @@
     font-size: 1.6rem;
     color: #474747;
     text-align: center;
-    line-height: 1.5;
+    line-height: 2;
     margin-top: 1rem;
     font-style: italic;
     max-width: 1300px;

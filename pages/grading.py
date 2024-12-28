@@ -23,7 +23,15 @@ if "uploaded_student_files" not in st.session_state:
     st.session_state["uploaded_student_files"] = []
 
 # --- Title ---
-st.markdown("<div class='title'>Welcome to the Grading Hub 📝</div>", unsafe_allow_html=True)
+st.markdown(
+    f"""
+    <div class="title-container">
+        <img src="data:image/png;base64,{loader.load_image(img_path='assets/logo.trans.png')}" alt="Grady Logo">
+        <div class="title">Grady - Grading Hub</div>
+    </div>
+    """, 
+    unsafe_allow_html=True
+)
 
 # --- Main Menu ---
 selected_option = option_menu(
@@ -106,85 +114,89 @@ if st.session_state["selected_option"] == "Upload Rubric":
 
 # --- Grade Answer Section ---
 if st.session_state["selected_option"] == "Grade Answer":
-    st.markdown("<div class='h1'>Upload Answer PDF files (Multiple Files Allowed)</div>", unsafe_allow_html=True)
+    if not st.session_state["rubric_result"]:
+        st.warning("No grading rubrics available. Please upload the grading rubric first.")
+    else:
+        st.markdown("<div class='h1'>Upload Answer PDF files (Multiple Files Allowed)</div>", unsafe_allow_html=True)
 
-    uploaded_files = st.file_uploader(
-        " ",
-        type="pdf",
-        accept_multiple_files=True,
-        label_visibility="collapsed",
-        key="student_answers_uploader"
-    )
+        uploaded_files = st.file_uploader(
+            " ",
+            type="pdf",
+            accept_multiple_files=True,
+            label_visibility="collapsed",
+            key="student_answers_uploader"
+        )
 
-    if uploaded_files:
-        st.session_state["uploaded_student_files"] = uploaded_files
+        if uploaded_files:
+            st.session_state["uploaded_student_files"] = uploaded_files
 
-    if st.session_state["uploaded_student_files"]:
-        st.markdown("<br>", unsafe_allow_html=True)  
-        if st.button("Grade", key="grade_button"):
-            results_cot = []  
+        if st.session_state["uploaded_student_files"]:
+            st.markdown("<br>", unsafe_allow_html=True)  
+            if st.button("Grade", key="grade_button"):
+                with st.spinner("Grady is grading..."):
+                    results_cot = []  
 
-            for uploaded_file in st.session_state["uploaded_student_files"]:
-                student_id = uploaded_file.name.replace(".pdf", "")
-                content = loader.extract_pdf(uploaded_file)
-                student_text = content if isinstance(content, str) else ""
+                    for uploaded_file in st.session_state["uploaded_student_files"]:
+                        student_id = uploaded_file.name.replace(".pdf", "")
+                        content = loader.extract_pdf(uploaded_file)
+                        student_text = content if isinstance(content, str) else ""
 
-                if st.session_state["rubric_result"]:
-                    rubric_result = st.session_state["rubric_result"]
-                    response_aligned = llm_function.extract_student_answers(student_text, rubric_result)
+                        if st.session_state["rubric_result"]:
+                            rubric_result = st.session_state["rubric_result"]
+                            response_aligned = llm_function.extract_student_answers(student_text, rubric_result)
 
-                    try:
-                        aligned_answers = json.loads(response_aligned.strip("```json").strip())
-                    except json.JSONDecodeError:
-                        st.error("Failed to parse the aligned answers. Please check the response.")
-                        st.write(response_aligned)
-                        continue
+                            try:
+                                aligned_answers = json.loads(response_aligned.strip("```json").strip())
+                            except json.JSONDecodeError:
+                                st.error("Failed to parse the aligned answers. Please check the response.")
+                                st.write(response_aligned)
+                                continue
 
-                    for question_data, student_data in zip(rubric_result, aligned_answers):
-                        response = llm_function.grade_student_answer(
-                            question=question_data.get("question", ""),
-                            key_elements=question_data.get("key_elements", []),
-                            rubric=question_data.get("rubric", {}),
-                            student_id=student_id,
-                            student_answer=student_data.get("student_answer", "")
-                        )
+                            for question_data, student_data in zip(rubric_result, aligned_answers):
+                                response = llm_function.grade_student_answer(
+                                    question=question_data.get("question", ""),
+                                    key_elements=question_data.get("key_elements", []),
+                                    rubric=question_data.get("rubric", {}),
+                                    student_id=student_id,
+                                    student_answer=student_data.get("student_answer", "")
+                                )
 
-                        results_cot.append({
-                            "Student ID": student_id,
-                            "Question": question_data.get("question", ""),
-                            "Marks Allocation": question_data.get("marks_allocation", ""),
-                            "Student Answer": student_data.get("student_answer", ""),
-                            "LLM_Response": response
-                        })
+                                results_cot.append({
+                                    "Student ID": student_id,
+                                    "Question": question_data.get("question", ""),
+                                    "Marks Allocation": question_data.get("marks_allocation", ""),
+                                    "Student Answer": student_data.get("student_answer", ""),
+                                    "LLM_Response": response
+                                })
+                                
+                results_df = pd.DataFrame(results_cot)
+                results_df = process_result.process(results_df)
+                st.session_state["results_df"] = results_df
 
-            results_df = pd.DataFrame(results_cot)
-            results_df = process_result.process(results_df)
-            st.session_state["results_df"] = results_df
-
-    if st.session_state.get("results_df") is not None:
-        results_df = st.session_state["results_df"]
-        student_ids = results_df["Student ID"].unique()
-        st.markdown("<div class='h1'>View Results", unsafe_allow_html=True)
-        selected_student_id = st.selectbox("Select a Student ID:", student_ids)
-        st.markdown('<hr class="divider">', unsafe_allow_html=True)
-
-        if selected_student_id:
-            student_data = results_df[results_df["Student ID"] == selected_student_id]
-            st.markdown(f"#### Results for Student ID: {selected_student_id}")
+        if st.session_state.get("results_df") is not None:
+            results_df = st.session_state["results_df"]
+            student_ids = results_df["Student ID"].unique()
+            st.markdown("<div class='h1'>View Results", unsafe_allow_html=True)
+            selected_student_id = st.selectbox("Select a Student ID:", student_ids)
             st.markdown('<hr class="divider">', unsafe_allow_html=True)
-            process_result.display(student_data, selected_student_id)                      
-            st.markdown('<hr class="divider">', unsafe_allow_html=True)
-            if st.session_state.get("results_df") is not None:
-                csv = st.session_state["results_df"].to_csv(index=False).encode('utf-8')
-                download_file_name = f"{st.session_state['assessment_name']}_grading_results.csv" if st.session_state["assessment_name"] else "grading_results.csv"
-                
-                st.download_button(
-                    label="Download Results as CSV",
-                    data=csv,
-                    file_name=download_file_name,
-                    mime="text/csv",
-                    key="download_button"
-                )
+
+            if selected_student_id:
+                student_data = results_df[results_df["Student ID"] == selected_student_id]
+                st.markdown(f"#### Results for Student ID: {selected_student_id}")
+                st.markdown('<hr class="divider">', unsafe_allow_html=True)
+                process_result.display(student_data, selected_student_id)                      
+                st.markdown('<hr class="divider">', unsafe_allow_html=True)
+                if st.session_state.get("results_df") is not None:
+                    csv = st.session_state["results_df"].to_csv(index=False).encode('utf-8')
+                    download_file_name = f"{st.session_state['assessment_name']}_grading_results.csv" if st.session_state["assessment_name"] else "grading_results.csv"
+                    
+                    st.download_button(
+                        label="Download Results as CSV",
+                        data=csv,
+                        file_name=download_file_name,
+                        mime="text/csv",
+                        key="download_button"
+                    )
 
 # --- Visualization Section ---
 if st.session_state["selected_option"] == "Visualization":
@@ -223,7 +235,6 @@ if st.session_state["selected_option"] == "Visualization":
 
         with col2:
             generate_eda.boxplot(results_df)
-        
         
         generate_eda.areachart(results_df)
     
