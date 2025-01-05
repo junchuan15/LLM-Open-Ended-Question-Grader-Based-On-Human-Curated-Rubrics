@@ -10,22 +10,23 @@ with open(css_path) as f:
 logo = loader.load_image(img_path = 'assets/logo.bg.png')
 
 st.markdown(f'''
-<div class="title-container">
-    <div class="logo-container">
-        <img src="data:image/png;base64,{logo}" class="logo" alt="Logo">
-    </div>
+<div class="logo-container">
+    <img src="data:image/png;base64,{logo}" class="logo" alt="Logo">
+</div>
+<div class="text-container">
     <span class="title-text">
         Replace Your <strong class="red-pen">Red Pen ✍️</strong> with Just a <strong class="green-clicks">Few Simple Clicks 🖱️</strong>
     </span>
-        <p class="title-description">
+    <p class="title-description">
         <strong>Meet Grady – Your Trusted AI-Powered Grading Assistant.</strong><br>
-        Leveraging the power of Large Language Model (LLM), transforms your grading experience on open-ended questions by reducing manual workload, ensuring fairness, and personalizing assessments to match your unique needs.
+        Leveraging the power of Large Language Model (LLM), Grady transforms your grading experience on open-ended questions by reducing manual workload, ensuring fairness, and personalizing assessments to match your unique needs.
     </p>
 </div>
 ''', unsafe_allow_html=True)
 
+
 st.markdown("""
-<div id="key-features" style="margin-top: 3rem;">
+<div id="key-features" style="margin-top: 3rem; "margin-bottom: 2rem;">
     <div class='h1'>
      Key Features
      </div>
@@ -90,3 +91,36 @@ st.markdown("""
         </div>
     </div>
 """, unsafe_allow_html=True)
+
+st.markdown("""
+<div class="h1">Why Choose Grady ?</div>
+<div class="advantages-container">
+    <div class="card">
+        <div class="card-text">
+            <span class="card-title">⏱️ Save Time</span>
+            <span class="card-desc">
+                Automate grading of open-ended questions, saving hours of manual effort.
+            </span>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-text">
+            <span class="card-title">⚖️ Ensure Fairness</span>
+            <span class="card-desc">
+                Consistent scoring based on predefined rubrics ensures objective and fair evaluations.
+            </span>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-text">
+            <span class="card-title">📊 Actionable Insights</span>
+            <span class="card-desc">
+                Interactive dashboards provide detailed performance analysis for better decision-making.
+            </span>
+        </div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+
+

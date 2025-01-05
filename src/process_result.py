@@ -2,7 +2,7 @@ import json
 import streamlit as st
 import pandas as pd
 
-def extract_match_and_score(response_text):
+def process_llm_response(response_text):
     matched_key_elements = 0
     score = None
     key_element_matches_formatted = ""
@@ -31,7 +31,7 @@ def organize_result(df):
     df["Question_Label"] = "Q" + df["Question_Index"].astype(str)
 
     pivot_df = df.pivot(index="Student ID", columns="Question_Label", 
-                                values=["Question", "Marks Allocation", "Student Answer", "Key Element Matching", "Score", "Explanation"])  
+                                values=["Question", "Marks Allocation", "Rubric", "Student Answer", "Key Element Matching", "Score", "Explanation"])  
 
     pivot_df.columns = [f"{col[1]}_{col[0]}" for col in pivot_df.columns]
     pivot_df.reset_index(inplace=True)
@@ -41,9 +41,10 @@ def organize_result(df):
         column_order.extend([
             f"{index}_Question",
             f"{index}_Marks Allocation",
+            f"{index}_Rubric",
             f"{index}_Student Answer",
             f"{index}_Key Element Matching",
-            f"{index}_Explanation",  # Corrected spelling
+            f"{index}_Explanation",  
             f"{index}_Score"
         ])
     pivot_df = pivot_df[column_order]
@@ -55,20 +56,59 @@ def organize_result(df):
 
 def process(df):
     df[['Key Element Matching', 'Total Matched Key Elements', 'Score', 'Explanation']] = df['LLM_Response'].apply(  
-        lambda x: pd.Series(extract_match_and_score(x))
+        lambda x: pd.Series(process_llm_response(x))
     )
     df = organize_result(df)
     return df
 
 def display(df, student_id):
-    for _, row in df.iterrows():
-        for col_name, value in row.items():
-            col1, col2, col3 = st.columns([1.1, 0.2, 6])  
-            with col1:
-                st.markdown(f"<span class='column-name'>{col_name}</span>", unsafe_allow_html=True)
-            with col2:
-                st.markdown(f"<span class='column-separator'>|</span>", unsafe_allow_html=True)
-            with col3:
-                st.markdown(f"{value}")                         
+    student_data = df[df["Student ID"] == student_id]
+    
+    if student_data.empty:
+        st.warning("No data found for the selected student.")
+        return
+
+    question_numbers = sorted(
+        {col.split("_")[0] for col in df.columns if col.startswith("Q") and "_Question" in col}
+    )
+
+    for question_number in question_numbers:
+        question_text = student_data[f"{question_number}_Question"].iloc[0]
+        marks_allocation = student_data[f"{question_number}_Marks Allocation"].iloc[0]
+        rubric = student_data[f"{question_number}_Rubric"].iloc[0]
+        student_answer = student_data[f"{question_number}_Student Answer"].iloc[0]
+        key_element_matching = student_data[f"{question_number}_Key Element Matching"].iloc[0]
+        explanation = student_data[f"{question_number}_Explanation"].iloc[0]
+        score = student_data[f"{question_number}_Score"].iloc[0]
+
+        with st.expander(f"{question_number}: {question_text}"):
+            st.markdown(f"#### Marks Allocation: **{marks_allocation}**")
+            
+            st.markdown("#### Rubric:")
+            try:
+                rubric_dict = eval(rubric)  
+                for points, description in rubric_dict.items():
+                    st.markdown(f"- **{points}:** {description}")
+            except Exception:
+                st.markdown(f"```\n{rubric}\n```")
+            
+            st.markdown("#### Student Answer:")
+            st.markdown(f"""{student_answer}""")
+            
+            st.markdown("#### Key Element Matching:")
+            if isinstance(key_element_matching, str):
+                key_element_matching_lines = key_element_matching.split("\n")
+                for line in key_element_matching_lines:
+                    st.markdown(f"{line.strip()}")
+            else:
+                st.markdown("No key element matching details available.")
+            
+            st.markdown("#### Explanation:")
+            st.markdown(f"""{explanation}""")
+            st.markdown(f"#### Score: **{score}**")
+
+    total_marks = student_data["Total_Marks_Allocation"].iloc[0]
+    total_score = student_data["Total_Score"].iloc[0]
+    st.markdown(f"#### Total Score: {total_score}/{total_marks}")
 
 

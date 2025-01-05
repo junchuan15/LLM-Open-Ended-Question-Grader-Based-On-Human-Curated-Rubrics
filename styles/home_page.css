@@ -10,47 +10,49 @@
 
 /* Logo Container */
 .logo-container {
-    width: 100%;
     display: flex;
     justify-content: center;
-    align-items: center;
-    margin-top: 1.5rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 
 .logo {
-    max-width: 100%;
-    align-items: center;
-    padding: 0 2rem;
+    max-width: 150px; 
+    height: auto;
 }
 
-/* Title Container */
-.title-container {
+.text-container {
     width: 100%;
     display: flex;
     flex-direction: column;
-    text-align: center;
+    text-align: center; 
 }
 
-.title-container .title-text {
+/* Title Text */
+.title-text {
     font-size: 2rem;
     font-weight: bold;
     font-style: italic;
+    color: #2e2e2e;
+    margin-bottom: 1rem; /* Add spacing below the title */
 }
 
-.title-container .title-text .red-pen {
-    font-size: 3.5rem;
-    color: rgba(255, 0, 0, 0.726);
+/* Highlighted Words */
+.title-text .red-pen {
+    font-size: 3rem;
+    color: #ff1744; /* Bright red for emphasis */
     font-family: "Lilita One", sans-serif;
 }
 
-.title-container .title-text .green-clicks {
-    font-size: 3.5rem;
-    color: rgba(0, 128, 0, 0.788);
+.title-text .green-clicks {
+    font-size: 3rem;
+    color: #388e3c; /* Bright green for emphasis */
     font-family: "Lilita One", sans-serif;
 }
 
-.title-container .title-description {
-    font-size: 1.6rem;
+/* Title Description */
+.title-description {
+    font-size: 1.5rem;
     color: #474747;
     text-align: center;
     line-height: 2;
@@ -59,52 +61,6 @@
     max-width: 1300px;
     margin-left: auto;
     margin-right: auto;
-}
-/* Get Started Frame */
-.get-started-frame {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 1.5rem; /* Adjust spacing for balance */
-}
-
-/* Get Started Container */
-.get-started-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 2rem 0; /* Spacing remains consistent */
-    transition: transform 0.2s ease-in-out; /* Add transform for hover effect */
-    cursor: pointer; /* Indicates clickability */
-}
-
-.get-started-arrow {
-    font-size: 3rem; 
-    text-decoration: none;
-    color: #2e2e2e; 
-    animation: bounce 1.5s infinite ease-in-out; 
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3); 
-}
-
-.get-started-arrow:hover {
-    color: #150e6d; 
-    transform: scale(1.3); 
-    text-shadow: 2px 2px 6px rgba(21, 14, 109, 0.5); 
-}
-
-/* Bounce Animation */
-@keyframes bounce {
-    0%, 100% {
-        transform: translateY(0); 
-    }
-    50% {
-        transform: translateY(10px); 
-    }
-}
-
-html {
-    scroll-behavior: smooth; 
 }
 
 /* Key Features  */
@@ -125,7 +81,7 @@ html {
     padding: 1.4rem;
     border-left: 4px solid rgb(46, 43, 58);
     border-radius: 8px; 
-    background-color: rgba(255, 255, 255, 0.062); 
+    background-color: rgba(255, 255, 255, 0.527); 
     box-shadow: 0 4px 6px rgba(175, 173, 173, 0.205); 
     transition: all 0.3s ease-in-out; 
 }
@@ -180,14 +136,14 @@ html {
     padding: 1rem; 
     transition: all 0.2s ease-in-out; 
     transform-origin: center center; 
-    background-color: #f3f3f3; 
-    box-shadow: 0 6px 12px rgba(27, 2, 139, 0.288); 
+    background-color: rgba(255, 255, 255, 0.527); 
+    box-shadow: 0 6px 12px rgba(114, 114, 114, 0.288); 
 }
 
 .objectives-container .card:hover {
-    transform: scale(1.07); 
-    border: 2px solid rgb(72, 69, 83); 
-    box-shadow: 0 8px 16px rgba(27, 2, 139, 0.363); 
+    transform: scale(1.10); 
+    border: 2px solid rgb(70, 70, 70); 
+    box-shadow: 0 8px 16px rgba(138, 137, 143, 0.363); 
 }
 
 .objectives-container .card .card-text {
@@ -200,14 +156,70 @@ html {
     margin: 0;
     padding: 0;
     font-weight: bold; 
-    font-size: 1.2rem; 
+    font-size: 1.4rem; 
 }
 
 .objectives-container .card .card-text .card-desc {
     margin: 0;
-    font-size: 1.05rem; 
+    font-size: 1.2rem; 
     color: #474747;
     text-align: justify;
 }
 
+/* Card Container */
+.advantages-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* Add spacing between cards */
+  width: 100%;
+  padding: 1rem;
+}
+
+/* Card Styles */
+.card {
+  background-color: #1f1f1f00; /* Card background */
+  border: 1px solid rgb(73, 73, 73);
+  border-radius: 8px;
+  padding: 1.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Hover Effect */
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Text Styling */
+.card-text {
+  text-align: left;
+}
+
+.card-title {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #4e3bf6;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; 
+  margin-bottom: 0.5rem;
+}
+
+.card-desc {
+  font-size: 1.2rem;
+  color: #474747;  
+  line-height: 1.5;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .card-title {
+    font-size: 1.2rem;
+  }
+
+  .card-desc {
+    font-size: 0.9rem;
+  }
+}
 

@@ -120,11 +120,11 @@ st.markdown("""
 
 data = {
     "Prompting Technique": ["Zero-shot", "Chain-of-Thought", "Reflexion"],
-    "Accuracy": [0.612, 0.729, 0.639],
-    "F1 Score": [0.625, 0.732, 0.674],
-    "Precision": [0.669, 0.758, 0.682],
-    "Recall": [0.612, 0.742, 0.677],
-    "Quadratic Weighted Kappa": [0.764, 0.831, 0.793],
+    "Accuracy": [0.625, 0.763, 0.641],
+    "F1 Score": [0.627, 0.764, 0.646],
+    "Precision": [0.635, 0.766, 0.656],
+    "Recall": [0.625, 0.763, 0.641],
+    "Quadratic Weighted Kappa": [0.752, 0.871, 0.782],
 }
 
 df = pd.DataFrame(data)
@@ -134,7 +134,7 @@ st.markdown("""
     <div class="description">
         Based on the evaluation results, the <strong>Chain-of-Thought (CoT)</strong> prompting technique is selected as the most effective for 
         the automated grading task. It achieved the highest scores across key performance metrics, including 
-        <strong>Accuracy (0.729)</strong>, <strong>F1 Score (0.732)</strong>, <strong>Precision (0.758)</strong>, and <strong>Quadratic Weighted Kappa (0.831)</strong>. 
+        <strong>Accuracy (0.763)</strong>, <strong>F1 Score (0.764)</strong>, <strong>Precision (0.766)</strong>, and <strong>Quadratic Weighted Kappa (0.871)</strong>. 
         Its ability to decompose complex tasks into logical steps ensures that the grading process is both accurate and consistent with human-curated rubrics, 
         making it the optimal choice for evaluating open-ended questions.
     </div>

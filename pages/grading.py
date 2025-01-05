@@ -74,43 +74,50 @@ if st.session_state["selected_option"] == "Upload Rubric":
         st.session_state["assessment_name"] = ""
 
     assessment_name = st.text_input(
-        " ",
+        "",
         label_visibility="collapsed",
         value=st.session_state["assessment_name"],
         placeholder="Enter the course code (e.g., WIA2001 DATABASE)"
     )
     st.markdown("")
-          
+  
     if assessment_name:
         st.session_state["assessment_name"] = assessment_name
         st.markdown("<div class='h1'>Upload PDF file containing Questions, Answers, and Grading Rubrics</div>", unsafe_allow_html=True)
-        uploaded_file = st.file_uploader(" ", type="pdf", label_visibility="collapsed", key="pdf_uploader")
+        uploaded_file = st.file_uploader(
+            "Please upload the file according to the format in the sample.", 
+            type="pdf", 
+            key="pdf_uploader")
+        
+        view_rubric = st.checkbox("View Sample Rubric File")
+        if view_rubric:
+            st.markdown(loader.display_pdf("assets/sample_rubric.pdf"), unsafe_allow_html=True)
+        with st.spinner("Grady is extracting rubric..."):
+            if uploaded_file and (st.session_state["uploaded_file"] != uploaded_file):
+                st.session_state["uploaded_file"] = uploaded_file
+                st.session_state["extracted_content"] = loader.extract_pdf(uploaded_file)
+                st.session_state["rubric_result"] = None  
 
-        if uploaded_file and (st.session_state["uploaded_file"] != uploaded_file):
-            st.session_state["uploaded_file"] = uploaded_file
-            st.session_state["extracted_content"] = loader.extract_pdf(uploaded_file)
-            st.session_state["rubric_result"] = None  
+            if st.session_state["extracted_content"] and st.session_state["rubric_result"] is None:
+                extracted_text = st.session_state["extracted_content"]
+                response = llm_function.extract_rubric(extracted_text)
+                try:
+                    rubric_data = json.loads(response.strip("```json").strip())
+                    st.session_state["rubric_result"] = rubric_data
+                except json.JSONDecodeError:
+                    st.error("Failed to parse the rubric result. Please check the extracted response.")
+                    st.write(response)
 
-        if st.session_state["extracted_content"] and st.session_state["rubric_result"] is None:
-            extracted_text = st.session_state["extracted_content"]
-            response = llm_function.extract_rubric(extracted_text)
-            try:
-                rubric_data = json.loads(response.strip("```json").strip())
-                st.session_state["rubric_result"] = rubric_data
-            except json.JSONDecodeError:
-                st.error("Failed to parse the rubric result. Please check the extracted response.")
-                st.write(response)
-
-        if st.session_state["rubric_result"]:
-            st.markdown(f"#### Questions and Rubrics")
-            for i, question_data in enumerate(st.session_state["rubric_result"], 1):
-                with st.expander(f"Question {i}"):
-                    st.json({
-                        "Question": question_data.get("question", "N/A"),
-                        "Marks Allocation": question_data.get("marks_allocation", "N/A"),
-                        "Key Elements": question_data.get("key_elements", []),
-                        "Rubric": question_data.get("rubric", {})
-                    })
+            if st.session_state["rubric_result"]:
+                st.markdown(f"#### Questions and Rubrics")
+                for i, question_data in enumerate(st.session_state["rubric_result"], 1):
+                    with st.expander(f"Question {i}"):
+                        st.json({
+                            "Question": question_data.get("question", "N/A"),
+                            "Marks Allocation": question_data.get("marks_allocation", "N/A"),
+                            "Key Elements": question_data.get("key_elements", []),
+                            "Rubric": question_data.get("rubric", {})
+                        })
 
 # --- Grade Answer Section ---
 if st.session_state["selected_option"] == "Grade Answer":
@@ -120,13 +127,15 @@ if st.session_state["selected_option"] == "Grade Answer":
         st.markdown("<div class='h1'>Upload Answer PDF files (Multiple Files Allowed)</div>", unsafe_allow_html=True)
 
         uploaded_files = st.file_uploader(
-            " ",
+            "Please upload the file according to the format in the sample.",
             type="pdf",
             accept_multiple_files=True,
-            label_visibility="collapsed",
             key="student_answers_uploader"
         )
-
+        view_answer = st.checkbox("View Sample Answer File")
+        if view_answer:
+            st.markdown(loader.display_pdf("assets/sample_answer.pdf"), unsafe_allow_html=True)
+            
         if uploaded_files:
             st.session_state["uploaded_student_files"] = uploaded_files
 
@@ -165,6 +174,7 @@ if st.session_state["selected_option"] == "Grade Answer":
                                     "Student ID": student_id,
                                     "Question": question_data.get("question", ""),
                                     "Marks Allocation": question_data.get("marks_allocation", ""),
+                                    "Rubric": question_data.get("rubric", ""),
                                     "Student Answer": student_data.get("student_answer", ""),
                                     "LLM_Response": response
                                 })
@@ -183,7 +193,6 @@ if st.session_state["selected_option"] == "Grade Answer":
             if selected_student_id:
                 student_data = results_df[results_df["Student ID"] == selected_student_id]
                 st.markdown(f"#### Results for Student ID: {selected_student_id}")
-                st.markdown('<hr class="divider">', unsafe_allow_html=True)
                 process_result.display(student_data, selected_student_id)                      
                 st.markdown('<hr class="divider">', unsafe_allow_html=True)
                 if st.session_state.get("results_df") is not None:
@@ -225,8 +234,7 @@ if st.session_state["selected_option"] == "Visualization":
                         """,
                         unsafe_allow_html=True,
                     )
-
-                        
+         
         generate_eda.scoretable(results_df)
         col1, col2 = st.columns(2)
 
@@ -235,7 +243,6 @@ if st.session_state["selected_option"] == "Visualization":
 
         with col2:
             generate_eda.boxplot(results_df)
-        
         generate_eda.areachart(results_df)
     
 
