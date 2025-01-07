@@ -24,15 +24,15 @@ st.markdown("""
         This project focuses on developing <strong>automated grading systems</strong> using <strong>large language models (LLMs)</strong> to evaluate 
         <strong>open-ended questions</strong> based on <strong>human-curated rubrics</strong>. By leveraging <strong>prompt engineering</strong>, various 
         prompting techniques are applied to the LLM model to identify the most robust and reliable approach for the automated grading task, 
-        based on evaluation across different performance metrics. The system is also designed to be flexible, 
-        allowing users to upload their own open-ended questions and rubrics from different domains to automate the grading process.
+        based on evaluation across different performance metrics. The system is also designed to be flexible, allowing users to upload their own open-ended 
+        questions and rubrics from different domains to automate the grading process.
     </div>
 """, unsafe_allow_html=True)
 
 st.markdown('<hr class="divider">', unsafe_allow_html=True)
 st.markdown('<div class="h1">About Dataset</div>', unsafe_allow_html=True)
 
-col1, col2 = st.columns([1,3])
+col1, col2, col3 = st.columns([3,0.5,7])
 
 with col1:
     st.markdown("""
@@ -43,10 +43,12 @@ with col1:
         </div>
     </div>
     """, unsafe_allow_html=True)
-    st.text("ASAP-SAS (Automated Student Assessment Prize - Short Answer Scoring)")
-
+    st.markdown("ASAP-SAS (Automated Student Assessment Prize - Short Answer Scoring)")
 
 with col2:
+    st.empty()
+    
+with col3:
     st.markdown("""
     <div class="column-content">
         <h2>Description</h2>

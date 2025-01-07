@@ -213,12 +213,7 @@ if st.session_state["selected_option"] == "Visualization":
         st.warning("No grading results available. Please complete the grading process first.")
     else:
         results_df = st.session_state["results_df"]
-        col1, col2 = st.columns([5,1])
-        with col1:
-            st.markdown(f"<div class='h1'>Assessment: {st.session_state['assessment_name']}</div>", unsafe_allow_html=True)
-        with col2:
-            st.markdown(f"<div class='h1'>({results_df['Total_Marks_Allocation'].mean()} Marks)</div>", unsafe_allow_html=True)
-
+        st.markdown(f"<div class='h1'>Assessment: {st.session_state['assessment_name']} ({results_df['Total_Marks_Allocation'].mean()} Marks)</div>", unsafe_allow_html=True)
         st.markdown(f"#### Total Students Evaluated: {results_df.shape[0]}")
         metrics = generate_eda.calculate_metrics(results_df)  
         for i in range(0, len(metrics), 3):

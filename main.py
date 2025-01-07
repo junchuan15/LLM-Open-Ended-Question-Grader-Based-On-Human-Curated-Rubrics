@@ -3,6 +3,16 @@ import streamlit as st
 st.set_page_config(
     layout="wide",                     
     initial_sidebar_state="collapsed",  
+    menu_items={
+        'About': 
+        """
+        This is the Final Year Project for my Bachelor’s Degree in Data Science.
+
+        Created by: **Quah Jun Chuan**  
+        
+        For any inquiries or feedback, email to: **22004851@siswa.um.edu.my**
+        """
+    }
 )
 
 # --- PAGE SETUP ---
