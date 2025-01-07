@@ -17,10 +17,10 @@ st.markdown(f'''
     <span class="title-text">
         Replace Your <strong class="red-pen">Red Pen ✍️</strong> with Just a <strong class="green-clicks">Few Simple Clicks 🖱️</strong>
     </span>
-    <p class="title-description">
-        <strong>Meet Grady – Your Trusted AI-Powered Grading Assistant.</strong><br>
+    <span class="description-text">
+        <br><strong>Meet Grady – Your Trusted AI-Powered Grading Assistant.</strong><br>
         Leveraging the power of Large Language Model (LLM), Grady transforms your grading experience on open-ended questions by reducing manual workload, ensuring fairness, and personalizing assessments to match your unique needs.
-    </p>
+    </span>
 </div>
 ''', unsafe_allow_html=True)
 

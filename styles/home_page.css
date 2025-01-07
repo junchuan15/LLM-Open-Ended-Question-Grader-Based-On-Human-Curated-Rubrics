@@ -1,66 +1,57 @@
 @import url('https://fonts.googleapis.com/css2?family=Bevan:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Jaro:opsz@6..72&family=Lilita+One&family=Sarala:wght@400;700&family=Seymour+One&family=Sigmar&family=Ultra&display=swap');
 
 .h1 {
-    font-size: 40px;
-    font-family: "Lilita One", serif;
-    color: #413c3c;
-    text-align: center;
-    margin-bottom: 20px;
+  font-size: 40px;
+  font-family: "Lilita One", serif;
+  color: #413c3c;
+  text-align: center;
+  margin-bottom: 20px;
 }
 
 /* Logo Container */
 .logo-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 .logo {
-    max-width: 150px; 
-    height: auto;
+  max-width: 150px; 
+  height: auto;
 }
 
 .text-container {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    text-align: center; 
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
 }
 
-/* Title Text */
 .title-text {
-    font-size: 2rem;
-    font-weight: bold;
-    font-style: italic;
-    color: #2e2e2e;
-    margin-bottom: 1rem; /* Add spacing below the title */
+  font-size: 2.5rem; 
+  font-weight: bold;
+  font-style: italic;
+  color: #2e2e2e;
 }
 
-/* Highlighted Words */
 .title-text .red-pen {
-    font-size: 3rem;
-    color: #ff1744; /* Bright red for emphasis */
-    font-family: "Lilita One", sans-serif;
+  font-size: 3rem;
+  color: #ff1744; 
+  font-family: "Lilita One", sans-serif;
 }
 
 .title-text .green-clicks {
-    font-size: 3rem;
-    color: #388e3c; /* Bright green for emphasis */
-    font-family: "Lilita One", sans-serif;
+  font-size: 3rem; 
+  color: #388e3c; 
+  font-family: "Lilita One", sans-serif;
 }
 
-/* Title Description */
-.title-description {
-    font-size: 1.5rem;
-    color: #474747;
-    text-align: center;
-    line-height: 2;
-    margin-top: 1rem;
-    font-style: italic;
-    max-width: 1300px;
-    margin-left: auto;
-    margin-right: auto;
+.description-text {
+  font-size: 1.5rem; 
+  color: #474747;
+  line-height: 1.8;
+  font-style: italic;
 }
 
 /* Key Features  */
@@ -199,7 +190,6 @@
     }
   }
   
-
 /* Text Styling */
 .card-text {
   text-align: left;
