@@ -185,11 +185,20 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Hover Effect */
 .card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
+    box-shadow: 0 4px 15px rgba(78, 59, 246, 0.7); /* Initial shadow */
+    animation: pulse-shadow 1.5s infinite ease-in-out;
+  }
+  
+  @keyframes pulse-shadow {
+    0%, 100% {
+      box-shadow: 0 4px 15px rgba(78, 59, 246, 0.7);
+    }
+    50% {
+      box-shadow: 0 6px 20px rgba(78, 59, 246, 0.4);
+    }
+  }
+  
 
 /* Text Styling */
 .card-text {
