@@ -1,7 +1,7 @@
 matplotlib
 openai
 pandas==2.2.1
-numpy==1.16.4
+numpy==1.26.4
 pdfplumber
 PyPDF2
 python-dotenv
