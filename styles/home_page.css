@@ -5,14 +5,15 @@
   font-family: "Lilita One", serif;
   color: #413c3c;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 1.5rem;
+  margin-top: 3rem;
 }
 
 /* Logo Container */
 .logo-container {
   display: flex;
   justify-content: center;
-  margin-top: 1rem;
+  margin-top: -1rem;
   margin-bottom: 1rem;
 }
 
@@ -29,29 +30,33 @@
 }
 
 .title-text {
-  font-size: 2.5rem; 
+  font-size: 2.6rem; 
   font-weight: bold;
   font-style: italic;
   color: #2e2e2e;
+  margin-bottom: -0.6rem;
 }
 
 .title-text .red-pen {
-  font-size: 3rem;
+  font-size: 3.2rem;
   color: #ff1744; 
   font-family: "Lilita One", sans-serif;
 }
 
 .title-text .green-clicks {
-  font-size: 3rem; 
+  font-size: 3.2rem; 
   color: #388e3c; 
   font-family: "Lilita One", sans-serif;
 }
 
 .description-text {
-  font-size: 1.5rem; 
+  font-size: 1.68rem; 
   color: #474747;
-  line-height: 1.8;
+  line-height: 1.9;
   font-style: italic;
+  max-width: 1400px; 
+  margin: 0 auto;
+  text-align: center;
 }
 
 /* Key Features  */
@@ -60,7 +65,7 @@
     grid-template-columns: repeat(2, 1fr); 
     gap: 2rem; 
     width: 100%;
-    max-width: 1200px; 
+    max-width: 1300px; 
     margin: 2rem auto;
 }
 
@@ -91,14 +96,14 @@
 }
 
 .feature-item .feature-content .feature-title {
-    font-size: 1.3rem;
+    font-size: 1.5rem;
     font-weight: bold;
     color: #2c2c2c;
 }
 
 /* Feature Description */
 .feature-item .feature-content .feature-desc {
-    font-size: 1rem;
+    font-size: 1.2rem;
     color: #474747;
     text-align: justify;
     line-height: 1.5;
@@ -116,7 +121,7 @@
 }
 
 .objectives-container .card {
-    width: 25rem; 
+    width: 28rem; 
     height: 10rem;
     display: flex;
     flex-direction: column; 

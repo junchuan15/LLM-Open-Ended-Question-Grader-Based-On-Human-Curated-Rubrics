@@ -74,19 +74,19 @@ st.markdown("""
         <div class="card">
             <div class='card-text'>
                 <span class='card-title'>01.</span>
-                <span class='card-desc'>To <b>develop</b> an LLM-based automated grading system for evaluating open-ended questions using human-curated rubrics.</span>
+                <span class='card-desc'>To <b>develop</b> an LLM-based grading model that evaluate open-ended questions based on human-curated rubrics.</span>
             </div>
         </div>
         <div class="card">
             <div class='card-text'>
                 <span class='card-title'>02.</span>
-                <span class='card-desc'>To <b>evaluate</b> the performance of the LLM-based grading model across different prompting techniques.</span>
+                <span class='card-desc'>To <b>evaluate</b> the performance of the LLM-based grading model  across different prompting techniques.</span>
             </div>
         </div>
         <div class="card">
             <div class='card-text'>
                 <span class='card-title'>03.</span>
-                <span class='card-desc'>To <b>visualize</b> student performance on the grading results using Exploratory Data Analysis (EDA).</span>
+                <span class='card-desc'>To <b>deploy</b> a web application which can automate the grading of open-ended questions based on uploaded rubrics.</span>
             </div>
         </div>
     </div>
