@@ -18,6 +18,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+# --- Overview ---
 st.markdown("""
     <div class="h1">Overview</div>
     <div class="description">
@@ -30,8 +31,9 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown('<hr class="divider">', unsafe_allow_html=True)
-st.markdown('<div class="h1">About Dataset</div>', unsafe_allow_html=True)
 
+# --- Dataset ---
+st.markdown('<div class="h1">About Dataset</div>', unsafe_allow_html=True)
 col1, col2, col3 = st.columns([3,0.5,7])
 
 with col1:
@@ -74,6 +76,8 @@ with col3:
         st.metric(label="Score label", value="4")
 
 st.markdown('<hr class="divider">', unsafe_allow_html=True)
+
+# --- Model Info ---
 st.markdown("""
 <div class="h1">Model Info</div>
 <div class="description">
@@ -92,6 +96,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+# --- Prompt Engineering ---
 st.markdown("""
 <div class='prompting-container'>
     <div class='grid'>
@@ -112,6 +117,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 st.markdown('<hr class="divider">', unsafe_allow_html=True)
 
+# --- Result ---
 st.markdown("""
     <div class="h1">Evaluation Results</div>
     <div class="description" style="margin-bottom: 20px;">

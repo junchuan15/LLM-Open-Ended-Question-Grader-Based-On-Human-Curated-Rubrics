@@ -40,6 +40,7 @@ user_manual_page = st.Page(
     title="User Manual",
     icon=":material/menu_book:",
 )
+
 # --- NAVIGATION SETUP ---
 main = st.navigation(
     {

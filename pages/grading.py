@@ -22,7 +22,6 @@ if "rubric_result" not in st.session_state:
 if "uploaded_student_files" not in st.session_state:
     st.session_state["uploaded_student_files"] = []
 
-# --- Title ---
 st.markdown(
     f"""
     <div class="title-container">

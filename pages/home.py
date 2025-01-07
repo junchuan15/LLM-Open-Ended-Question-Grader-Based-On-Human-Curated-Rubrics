@@ -9,6 +9,7 @@ with open(css_path) as f:
 
 logo = loader.load_image(img_path = 'assets/logo.bg.png')
 
+# --- Title & Logo ---
 st.markdown(f'''
 <div class="logo-container">
     <img src="data:image/png;base64,{logo}" class="logo" alt="Logo">
@@ -24,7 +25,7 @@ st.markdown(f'''
 </div>
 ''', unsafe_allow_html=True)
 
-
+# --- Key Features ---
 st.markdown("""
 <div id="key-features" style="margin-top: 3rem; "margin-bottom: 2rem;">
     <div class='h1'>
@@ -66,6 +67,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+# --- Objectives ---
 st.markdown("""
     <div class='h1'>
      Project Objectives
@@ -92,6 +94,7 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
+# --- Why Grady ---
 st.markdown("""
 <div class="h1">Why Choose Grady ?</div>
 <div class="advantages-container">
