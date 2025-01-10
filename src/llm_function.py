@@ -46,9 +46,11 @@ def extract_student_answers(extracted_text, rubric_result):
     You are given the extracted student answer text and a list of questions.
     Split the student answer text into separate answers for each question in the list.
     Match each question to its corresponding part of the student text.
+    If the answer is blank or not found, mark it as "No answer provided."
     Return the response in JSON format as a list of objects:
     [
-        {{"question": "<question>", "student_answer": "<extracted part of the student text>"}},
+        {{"question": "<question>", "student_answer": "<extracted part of the student text>"}} or
+        {{"question": "<question>", "student_answer": "No answer provided"}},
         ...
     ]
 
@@ -59,11 +61,12 @@ def extract_student_answers(extracted_text, rubric_result):
     {questions_text}
     """
     messages = [
-        {"role": "system", "content": "You are a helpful assistant that aligns student answers to questions."},
+        {"role": "system", "content": "You are a helpful assistant that aligns student answers to questions and identifies blank answers."},
         {"role": "user", "content": prompt},
     ]
     response = call_openai_api(messages)
     return response
+
 
 def grade_student_answer(question, key_elements, rubric, student_id, student_answer):
     messages_cot = [
@@ -83,7 +86,7 @@ def grade_student_answer(question, key_elements, rubric, student_id, student_ans
             Step-by-step process:
             1. Analyze the student's answer phrase by phrase to identify potential matches for each key element.
             2. For each key element:
-                - Determine if the key element is **fully matched**. A full match means that all important keywords or their synonyms in the key element are present in the student's answer.
+                - Determine if the key element is **fully matched**. A full match means that all important keywords or their synonyms in the key element are present in the student's answer. Partially match or incomplete answer is not counted as a matched.
                 - Extract the exact part of the student's answer that fully matches the key element.
                 - If the key element is not present, clearly state "No match."
             3. Summarize the total number of matched key elements.
