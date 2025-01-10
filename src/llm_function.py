@@ -45,8 +45,8 @@ def extract_student_answers(extracted_text, rubric_result):
     prompt = f"""
     You are given the extracted student answer text and a list of questions.
     Split the student answer text into separate answers for each question in the list.
-    Match each question to its corresponding part of the student text.
-    If the answer is blank or not found, mark it as "No answer provided."
+    Match each question to its corresponding part of the student text based on number indexing.
+    If the answer is blank , mark it as "No answer provided."
     Return the response in JSON format as a list of objects:
     [
         {{"question": "<question>", "student_answer": "<extracted part of the student text>"}} or
@@ -61,7 +61,7 @@ def extract_student_answers(extracted_text, rubric_result):
     {questions_text}
     """
     messages = [
-        {"role": "system", "content": "You are a helpful assistant that aligns student answers to questions and identifies blank answers."},
+        {"role": "system", "content": "You are a helpful assistant that aligns student answers to questions."},
         {"role": "user", "content": prompt},
     ]
     response = call_openai_api(messages)
