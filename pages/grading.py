@@ -4,6 +4,8 @@ from src import loader, llm_function, process_result, generate_eda
 import pandas as pd
 import json
 import os
+from concurrent.futures import ThreadPoolExecutor
+
 
 # --- Load CSS ---
 css_path = os.path.join(os.path.dirname(__file__), "../styles/grading_page.css")
@@ -138,66 +140,74 @@ if st.session_state["selected_option"] == "Grade Answer":
         if uploaded_files:
             st.session_state["uploaded_student_files"] = uploaded_files
 
+        def grade_student_file(uploaded_file, rubric_result):
+            student_id = uploaded_file.name.replace(".pdf", "")
+            content = loader.extract_pdf(uploaded_file)
+            student_text = content if isinstance(content, str) else ""
+
+            aligned_answers = loader.extract_student_answers(student_text, rubric_result)
+            graded_results = []
+
+            for question_data, student_data in zip(rubric_result, aligned_answers):
+                response = llm_function.grade_student_answer(
+                    question=question_data.get("question", ""),
+                    key_elements=question_data.get("key_elements", []),
+                    rubric=question_data.get("rubric", {}),
+                    student_id=student_id,
+                    student_answer=student_data.get("student_answer", "")
+                )
+                graded_results.append({
+                    "Student ID": student_id,
+                    "Question": question_data.get("question", ""),
+                    "Marks Allocation": question_data.get("marks_allocation", ""),
+                    "Rubric": question_data.get("rubric", ""),
+                    "Student Answer": student_data.get("student_answer", ""),
+                    "LLM_Response": response
+                })
+            return graded_results
+
         if st.session_state["uploaded_student_files"]:
-            st.markdown("<br>", unsafe_allow_html=True)  
+            st.markdown("<br>", unsafe_allow_html=True)
             if st.button("Grade", key="grade_button"):
                 with st.spinner("Grady is grading..."):
-                    results_cot = []  
 
-                    for uploaded_file in st.session_state["uploaded_student_files"]:
-                        student_id = uploaded_file.name.replace(".pdf", "")
-                        content = loader.extract_pdf(uploaded_file)
-                        student_text = content if isinstance(content, str) else ""
+                    rubric_result = st.session_state["rubric_result"]
+                    results_cot = []
 
-                        if st.session_state["rubric_result"]:
-                            rubric_result = st.session_state["rubric_result"]
-                            aligned_answers = loader.extract_student_answers(student_text, rubric_result)
+                    with ThreadPoolExecutor() as executor:
+                        futures = [executor.submit(grade_student_file, file, rubric_result) 
+                                   for file in st.session_state["uploaded_student_files"]]
 
-                            for question_data, student_data in zip(rubric_result, aligned_answers):
-                                response = llm_function.grade_student_answer(
-                                    question=question_data.get("question", ""),
-                                    key_elements=question_data.get("key_elements", []),
-                                    rubric=question_data.get("rubric", {}),
-                                    student_id=student_id,
-                                    student_answer=student_data.get("student_answer", "")
-                                )
+                        for future in futures:
+                            results_cot.extend(future.result())
 
-                                results_cot.append({
-                                    "Student ID": student_id,
-                                    "Question": question_data.get("question", ""),
-                                    "Marks Allocation": question_data.get("marks_allocation", ""),
-                                    "Rubric": question_data.get("rubric", ""),
-                                    "Student Answer": student_data.get("student_answer", ""),
-                                    "LLM_Response": response
-                                })
-                                
-                results_df = pd.DataFrame(results_cot)
-                results_df = process_result.process(results_df)
-                st.session_state["results_df"] = results_df
+                    results_df = pd.DataFrame(results_cot)
+                    results_df = process_result.process(results_df)
+                    st.session_state["results_df"] = results_df
 
         if st.session_state.get("results_df") is not None:
             results_df = st.session_state["results_df"]
             student_ids = results_df["Student ID"].unique()
-            st.markdown("<div class='h1'>View Results", unsafe_allow_html=True)
+            st.markdown("<div class='h1'>View Results</div>", unsafe_allow_html=True)
             selected_student_id = st.selectbox("Select a Student ID:", student_ids)
             st.markdown('<hr class="divider">', unsafe_allow_html=True)
 
             if selected_student_id:
                 student_data = results_df[results_df["Student ID"] == selected_student_id]
                 st.markdown(f"#### Results for Student ID: {selected_student_id}")
-                process_result.display(student_data, selected_student_id)                      
+                process_result.display(student_data, selected_student_id)
                 st.markdown('<hr class="divider">', unsafe_allow_html=True)
-                if st.session_state.get("results_df") is not None:
-                    csv = st.session_state["results_df"].to_csv(index=False).encode('utf-8')
-                    download_file_name = f"{st.session_state['assessment_name']}_grading_results.csv" if st.session_state["assessment_name"] else "grading_results.csv"
-                    
-                    st.download_button(
-                        label="Download Results as CSV",
-                        data=csv,
-                        file_name=download_file_name,
-                        mime="text/csv",
-                        key="download_button"
-                    )
+
+                csv = st.session_state["results_df"].to_csv(index=False).encode('utf-8')
+                download_file_name = f"{st.session_state['assessment_name']}_grading_results.csv" if st.session_state["assessment_name"] else "grading_results.csv"
+                
+                st.download_button(
+                    label="Download Results as CSV",
+                    data=csv,
+                    file_name=download_file_name,
+                    mime="text/csv",
+                    key="download_button"
+                )
 
 # --- Visualization Section ---
 if st.session_state["selected_option"] == "Visualization":
