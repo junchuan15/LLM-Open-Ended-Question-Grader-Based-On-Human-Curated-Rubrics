@@ -4,7 +4,7 @@ import os
 
 load_dotenv()
 
-def call_openai_api(messages, temperature=0):
+def call_openai_api(messages, temperature=0.1):
     api_key = os.getenv("OPENAI_API_KEY")
     client = OpenAI(api_key=api_key)
     try:
@@ -39,35 +39,6 @@ def extract_rubric(extracted_text):
     response = call_openai_api(messages)
     return response
 
-def extract_student_answers(extracted_text, rubric_result):
-    questions = [item.get("question", "") for item in rubric_result if "question" in item]
-    questions_text = "\n".join(questions)
-    prompt = f"""
-    You are given the extracted student answer text and a list of questions.
-    Split the student answer text into separate answers for each question in the list.
-    Match each question to its corresponding part of the student text based on number indexing.
-    If the answer is blank , mark it as "No answer provided."
-    Return the response in JSON format as a list of objects:
-    [
-        {{"question": "<question>", "student_answer": "<extracted part of the student text>"}} or
-        {{"question": "<question>", "student_answer": "No answer provided"}},
-        ...
-    ]
-
-    Text:
-    {extracted_text}
-
-    Questions:
-    {questions_text}
-    """
-    messages = [
-        {"role": "system", "content": "You are a helpful assistant that aligns student answers to questions."},
-        {"role": "user", "content": prompt},
-    ]
-    response = call_openai_api(messages)
-    return response
-
-
 def grade_student_answer(question, key_elements, rubric, student_id, student_answer):
     messages_cot = [
         {
@@ -98,8 +69,7 @@ def grade_student_answer(question, key_elements, rubric, student_id, student_ans
                 "Student ID": "{student_id}",
                 "Student Answer": "{student_answer}",
                 "Key Element Matching": [
-                    {{"Key Element": "<key element>", "Matching Answer": "<matching part from student answer>"}},
-                    {{"Key Element": "<key element>", "Matching Answer": "No match"}}
+                    {{"Key Element": "<key element>" | "Matching Answer": "<matching part from student answer> or No match"}},
                 ],
                 "Score": <score>,
                 "Explanation": "<brief explanation for the score>"

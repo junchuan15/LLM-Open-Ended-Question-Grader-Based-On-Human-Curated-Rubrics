@@ -1,6 +1,7 @@
 import base64
 import PyPDF2
 import pdfplumber
+import re
 
 def load_image(img_path):
     with open(img_path, "rb") as img_file:
@@ -40,3 +41,13 @@ def extract_pdf(file_obj):
             pdfFileObj.close()
 
     return "\n".join(combined_text)
+
+def extract_student_answers(extracted_text, rubric_result):
+    questions = [item.get("question", "") for item in rubric_result if "question" in item]
+    answers = re.split(r'\n*\d+\.\s*', extracted_text.strip())[1:] 
+    result = []
+    for i, question in enumerate(questions):
+        answer = answers[i].strip() if i < len(answers) and answers[i].strip() else "No answer provided."
+        result.append({"question": question, "student_answer": answer})
+
+    return result

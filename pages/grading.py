@@ -151,14 +151,7 @@ if st.session_state["selected_option"] == "Grade Answer":
 
                         if st.session_state["rubric_result"]:
                             rubric_result = st.session_state["rubric_result"]
-                            response_aligned = llm_function.extract_student_answers(student_text, rubric_result)
-
-                            try:
-                                aligned_answers = json.loads(response_aligned.strip("```json").strip())
-                            except json.JSONDecodeError:
-                                st.error("Failed to parse the aligned answers. Please check the response.")
-                                st.write(response_aligned)
-                                continue
+                            aligned_answers = loader.extract_student_answers(student_text, rubric_result)
 
                             for question_data, student_data in zip(rubric_result, aligned_answers):
                                 response = llm_function.grade_student_answer(
