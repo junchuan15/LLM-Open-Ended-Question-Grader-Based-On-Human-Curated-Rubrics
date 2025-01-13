@@ -45,7 +45,7 @@ user_manual_page = st.Page(
 main = st.navigation(
     {
         "Overview": [home_page, project_page],
-        "Get Started": [grading_page, user_manual_page],
+        "Get Started": [user_manual_page, grading_page],
     }
 )
 main.run()
