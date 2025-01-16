@@ -81,35 +81,52 @@ if st.session_state["selected_option"] == "Upload Rubric":
         placeholder="Enter the course code (e.g., WIA2001 DATABASE)"
     )
     st.markdown("")
-  
+
     if assessment_name:
         st.session_state["assessment_name"] = assessment_name
         st.markdown("<div class='h1'>Upload PDF file containing Questions, Answers, and Grading Rubrics</div>", unsafe_allow_html=True)
         uploaded_file = st.file_uploader(
-            "Please upload the file according to the format in the sample.", 
-            type="pdf", 
-            key="pdf_uploader")
-        
+            "Please upload the file according to the format in the sample.",
+            type="pdf",
+            key="pdf_uploader"
+        )
+
         view_rubric = st.checkbox("View Sample Rubric File")
         if view_rubric:
             st.markdown(loader.display_pdf("assets/sample_rubric.pdf"), unsafe_allow_html=True)
+
         with st.spinner("Grady is extracting rubric..."):
-            if uploaded_file and (st.session_state["uploaded_file"] != uploaded_file):
+            # Check for a new upload
+            if uploaded_file and (st.session_state.get("uploaded_file") != uploaded_file):
                 st.session_state["uploaded_file"] = uploaded_file
                 st.session_state["extracted_content"] = loader.extract_pdf(uploaded_file)
-                st.session_state["rubric_result"] = None  
+                st.session_state["rubric_result"] = None
 
-            if st.session_state["extracted_content"] and st.session_state["rubric_result"] is None:
-                extracted_text = st.session_state["extracted_content"]
-                response = llm_function.extract_rubric(extracted_text)
-                try:
-                    rubric_data = json.loads(response.strip("```json").strip())
-                    st.session_state["rubric_result"] = rubric_data
-                except json.JSONDecodeError:
-                    st.error("Failed to parse the rubric result. Please check the extracted response.")
-                    st.write(response)
+                if st.session_state["extracted_content"]:
+                    extracted_text = st.session_state["extracted_content"]
+                    response = llm_function.extract_rubric(extracted_text)
+                    try:
+                        rubric_data = json.loads(response.strip("```json").strip())
 
-            if st.session_state["rubric_result"]:
+                        # Validate rubric structure
+                        if not rubric_data or not isinstance(rubric_data, list):
+                            raise ValueError("No valid rubrics detected in the uploaded file.")
+
+                        for item in rubric_data:
+                            if "question" not in item or "rubric" not in item:
+                                raise ValueError("Uploaded file does not contain valid rubrics.")
+
+                        st.session_state["rubric_result"] = rubric_data
+
+                    except (json.JSONDecodeError, ValueError):
+                        st.error("Failed to parse the rubric result. Please upload a properly formatted rubric file.")
+                        # Reset file uploader to allow re-upload
+                        st.session_state["uploaded_file"] = None
+                        st.session_state["extracted_content"] = None
+                        st.session_state["rubric_result"] = None
+                        st.stop()  # Stop further execution
+
+            if st.session_state.get("rubric_result"):
                 st.markdown(f"#### Questions and Rubrics")
                 for i, question_data in enumerate(st.session_state["rubric_result"], 1):
                     with st.expander(f"Question {i}"):

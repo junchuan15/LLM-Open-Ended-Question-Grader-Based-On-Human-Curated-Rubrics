@@ -28,6 +28,8 @@ def extract_rubric(extracted_text):
 
     Ensure each question is treated as a separate object in the array.
     Do not simplify the key elements, include all words as in the extracted text.
+    If no rubrics are detected, return an empty list.
+
     Text:
     {extracted_text}
     """
