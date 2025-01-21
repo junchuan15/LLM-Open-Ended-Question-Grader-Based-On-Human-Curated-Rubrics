@@ -6,8 +6,6 @@ This repository contains my Bachelor's Final Year Project (WIH3001 Data Science 
 
 This project focuses on developing an **automated grading system** using **Large Language Models (LLMs)** to evaluate open-ended questions based on human-curated rubrics. The system is implemented using **Streamlit**, a Python-based web framework, and is powered by **OpenAI's GPT-4o Mini** model. By leveraging **prompt engineering**, various prompting techniques are applied to the LLM model to identify the most robust and reliable approach for the automated grading task. [Chain-of-Thought Prompting](https://www.promptingguide.ai/techniques/cot) is identified as the best technique and is employed in the system, as it outperformed other prompting techniques across different performance metrics. The system is designed to be flexible, allowing users to upload their open-ended questions and rubrics from different domains to automate the grading process.
 
----
-
 ## **Key Features**  
 
 1. **📂 Upload Rubrics**  
