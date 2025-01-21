@@ -6,7 +6,9 @@ This repository contains my Bachelor's Final Year Project (WIH3001 Data Science 
 
 ## **Project Overview**  
 
-This project focuses on developing an **automated grading system** using **Large Language Models (LLMs)** to evaluate open-ended questions based on human-curated rubrics. The system is implemented using **Streamlit**, a Python-based web framework, and is powered by **OpenAI's GPT-4o Mini** model. By leveraging **prompt engineering**, various prompting techniques are applied to the LLM model to identify the most robust and reliable approach for the automated grading task. [Chain-of-Thought Prompting](https://www.promptingguide.ai/techniques/cot) is identified as the best technique and is employed in the system, as it outperformed other prompting techniques across different performance metrics. The system is designed to be flexible, allowing users to upload their open-ended questions and rubrics from different domains to automate the grading process.
+This project focuses on developing an **automated grading system** using **Large Language Models (LLMs)** to evaluate open-ended questions based on human-curated rubrics. The system is implemented using **Streamlit**, a Python-based web framework, and is powered by **OpenAI's GPT-4o Mini** model. 
+
+By leveraging **prompt engineering**, various prompting techniques are applied to the LLM model to identify the most robust and reliable approach for the automated grading task. [Chain-of-Thought Prompting](https://www.promptingguide.ai/techniques/cot) is identified as the best technique and is employed in the system, as it outperformed other prompting techniques across different performance metrics. The system is designed to be flexible, allowing users to upload their open-ended questions and rubrics from different domains to automate the grading process.
 
 
 
@@ -32,20 +34,20 @@ This project focuses on developing an **automated grading system** using **Large
 
 Follow the steps below to set up the project:
 
-#### **Step 1: Clone the repository and navigate to the project directory:  
+#### **Step 1: Clone the repository and navigate to the project directory:**  
 
-    ```bash
-    git clone https://github.com/junchuan15/LLM-Open-Ended-Question-Grader-Based-On-Human-Curated-Rubrics.git
-    cd LLM-Open-Ended-Question-Grader-Based-On-Human-Curated-Rubrics
-    ```
+```bash
+git clone https://github.com/junchuan15/LLM-Open-Ended-Question-Grader-Based-On-Human-Curated-Rubrics.git
+cd LLM-Open-Ended-Question-Grader-Based-On-Human-Curated-Rubrics
+```
 
-#### **Step 2: Install the dependencies from the `requirements.txt` file using the following command:  
+#### **Step 2: Install the dependencies from the `requirements.txt` file using the following command:**  
 
-    ```bash
-    pip install -r requirements.txt
-    ```
+```bash
+pip install -r requirements.txt
+```
 
----
+
 
 ### **2. Configuring the OpenAI API Key**  
 
@@ -64,11 +66,11 @@ Once you have the API key, store it in the `.env` file in the `src/` directory.
 i. Open the `.env` file in any text editor.  
 ii. Replace `YOUR_OPENAI_API_KEY_HERE` with your actual API key. Example:
 
-    ```makefile
-    OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    ```
+```makefile
+OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
 
----
+
 
 ### **3. Running the Streamlit Application**  
 
@@ -79,10 +81,12 @@ streamlit run main.py
 ```
 
 
+
 ## **Contact Information**  
 
 For any inquiries or support, please contact:  
 📧 **Email:** [22004851@siswa.um.edu.my](mailto:22004851@siswa.um.edu.my)
+
 
 
 
