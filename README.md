@@ -47,7 +47,7 @@ cd LLM-Open-Ended-Question-Grader-Based-On-Human-Curated-Rubrics
 pip install -r requirements.txt
 ```
 
-
+---
 
 ### **2. Configuring the OpenAI API Key**  
 
@@ -70,7 +70,7 @@ ii. Replace `YOUR_OPENAI_API_KEY_HERE` with your actual API key. Example:
 OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
-
+---
 
 ### **3. Running the Streamlit Application**  
 
@@ -80,6 +80,7 @@ After setting up the environment and API key, start the application by running t
 streamlit run main.py
 ```
 
+---
 
 
 ## **Contact Information**  
