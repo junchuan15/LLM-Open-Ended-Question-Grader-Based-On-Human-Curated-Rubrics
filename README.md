@@ -32,20 +32,20 @@ This project focuses on developing an **automated grading system** using **Large
 
 Follow the steps below to set up the project:
 
-1. Clone the repository and navigate to the project directory:  
+#### **Step 1: Clone the repository and navigate to the project directory:  
 
     ```bash
     git clone https://github.com/junchuan15/LLM-Open-Ended-Question-Grader-Based-On-Human-Curated-Rubrics.git
     cd LLM-Open-Ended-Question-Grader-Based-On-Human-Curated-Rubrics
     ```
 
-2. Install the dependencies from the `requirements.txt` file using the following command:  
+#### **Step 2: Install the dependencies from the `requirements.txt` file using the following command:  
 
     ```bash
     pip install -r requirements.txt
     ```
 
--
+---
 
 ### **2. Configuring the OpenAI API Key**  
 
@@ -53,22 +53,22 @@ To use the OpenAI API for grading responses, you must obtain an API key and conf
 
 #### **Step 1: Get an OpenAI API Key**  
 
-1. Go to [OpenAI's API page](https://platform.openai.com/signup) and sign up or log in.  
-2. Navigate to the **API keys** section under your account settings.  
-3. Generate a new API key and copy it.  
+i. Go to [OpenAI's API page](https://platform.openai.com/signup) and sign up or log in.  
+ii. Navigate to the **API keys** section under your account settings.  
+iii. Generate a new API key and copy it.  
 
 #### **Step 2: Add the API Key to the Project**  
 
 Once you have the API key, store it in the `.env` file in the `src/` directory.  
 
-1. Open the `.env` file in any text editor.  
-2. Replace `YOUR_OPENAI_API_KEY_HERE` with your actual API key. Example:
+i. Open the `.env` file in any text editor.  
+ii. Replace `YOUR_OPENAI_API_KEY_HERE` with your actual API key. Example:
 
     ```makefile
     OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxx
     ```
 
--
+---
 
 ### **3. Running the Streamlit Application**  
 
