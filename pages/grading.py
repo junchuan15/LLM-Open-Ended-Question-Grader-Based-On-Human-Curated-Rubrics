@@ -1,6 +1,7 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
-from src import loader, llm_function, process_result, generate_eda
+from src import loader, process_result, generate_eda
+from src.llm_function import grader
 import pandas as pd
 import json
 import os
@@ -104,7 +105,7 @@ if st.session_state["selected_option"] == "Upload Rubric":
 
                 if st.session_state["extracted_content"]:
                     extracted_text = st.session_state["extracted_content"]
-                    response = llm_function.extract_rubric(extracted_text)
+                    response = grader.extract_rubric(extracted_text)
                     try:
                         rubric_data = json.loads(response.strip("```json").strip())
 
@@ -153,7 +154,7 @@ if st.session_state["selected_option"] == "Grade Answer":
         view_answer = st.checkbox("View Sample Answer File")
         if view_answer:
             st.markdown(loader.display_pdf("assets/sample_answer.pdf"), unsafe_allow_html=True)
-            
+
         if uploaded_files:
             st.session_state["uploaded_student_files"] = uploaded_files
 
@@ -166,7 +167,7 @@ if st.session_state["selected_option"] == "Grade Answer":
             graded_results = []
 
             for question_data, student_data in zip(rubric_result, aligned_answers):
-                response = llm_function.grade_student_answer(
+                response = grader.grade_student_answer(
                     question=question_data.get("question", ""),
                     key_elements=question_data.get("key_elements", []),
                     rubric=question_data.get("rubric", {}),
@@ -177,13 +178,13 @@ if st.session_state["selected_option"] == "Grade Answer":
                     "Student ID": student_id,
                     "Question": question_data.get("question", ""),
                     "Marks Allocation": question_data.get("marks_allocation", ""),
-                    "Rubric": question_data.get("rubric", ""),
+                    "Rubric": question_data.get("rubric", {}),
                     "Student Answer": student_data.get("student_answer", ""),
                     "LLM_Response": response
                 })
             return graded_results
 
-        if st.session_state["uploaded_student_files"]:
+        if st.session_state.get("uploaded_student_files"):
             st.markdown("<br>", unsafe_allow_html=True)
             if st.button("Grade", key="grade_button"):
                 with st.spinner("Grady is grading..."):
@@ -192,7 +193,7 @@ if st.session_state["selected_option"] == "Grade Answer":
                     results_cot = []
 
                     with ThreadPoolExecutor() as executor:
-                        futures = [executor.submit(grade_student_file, file, rubric_result) 
+                        futures = [executor.submit(grade_student_file, file, rubric_result)
                                    for file in st.session_state["uploaded_student_files"]]
 
                         for future in futures:
@@ -217,7 +218,7 @@ if st.session_state["selected_option"] == "Grade Answer":
 
                 csv = st.session_state["results_df"].to_csv(index=False).encode('utf-8')
                 download_file_name = f"{st.session_state['assessment_name']}_grading_results.csv" if st.session_state["assessment_name"] else "grading_results.csv"
-                
+
                 st.download_button(
                     label="Download Results as CSV",
                     data=csv,

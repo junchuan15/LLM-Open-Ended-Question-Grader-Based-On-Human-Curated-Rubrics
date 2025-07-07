@@ -5,7 +5,7 @@ import pandas as pd
 def process_llm_response(response_text):
     matched_key_elements = 0
     score = None
-    key_element_matches_formatted = ""
+    key_element_matches_formatted = []
     explanation = ""  
 
     try:
@@ -14,15 +14,15 @@ def process_llm_response(response_text):
         matched_key_elements = response_data.get("Total Matched Key Elements", 0)
         score = response_data.get("Score", None)
         explanation = response_data.get("Explanation", "")  
+        for match in key_element_matches:
+            answer = match.get("Matching Answer", "")
+            match["Status"] = "❌" if "No match" in answer else "✅"
 
-        key_element_matches_formatted = "\n".join(
-            [f"- Key Element: {match['Key Element']}  Matching Answer: {match['Matching Answer']}" 
-             for match in key_element_matches]
-        )
-
+        key_element_matches_formatted = key_element_matches
+        
     except json.JSONDecodeError:
         print(f"Error decoding JSON: {response_text}")
-        key_element_matches_formatted = "Error decoding JSON"
+        key_element_matches_formatted = []
 
     return key_element_matches_formatted, matched_key_elements, score, explanation  
 
@@ -63,7 +63,7 @@ def process(df):
 
 def display(df, student_id):
     student_data = df[df["Student ID"] == student_id]
-    
+
     if student_data.empty:
         st.warning("No data found for the selected student.")
         return
@@ -71,7 +71,12 @@ def display(df, student_id):
     question_numbers = sorted(
         {col.split("_")[0] for col in df.columns if col.startswith("Q") and "_Question" in col}
     )
-
+    summary_data = {
+        "Question": question_numbers,
+        "Score": [f"{student_data[f'{qn}_Score'].iloc[0]}/{student_data[f'{qn}_Marks Allocation'].iloc[0]}" for qn in question_numbers]
+    }
+    st.dataframe(pd.DataFrame(summary_data), use_container_width=True)
+    
     for question_number in question_numbers:
         question_text = student_data[f"{question_number}_Question"].iloc[0]
         marks_allocation = student_data[f"{question_number}_Marks Allocation"].iloc[0]
@@ -81,28 +86,39 @@ def display(df, student_id):
         explanation = student_data[f"{question_number}_Explanation"].iloc[0]
         score = student_data[f"{question_number}_Score"].iloc[0]
 
+
+
         with st.expander(f"{question_number}: {question_text}"):
             st.markdown(f"#### Marks Allocation: **{marks_allocation}**")
-            
+
             st.markdown("#### Rubric:")
             try:
-                rubric_dict = eval(rubric)  
-                for points, description in rubric_dict.items():
-                    st.markdown(f"- **{points}:** {description}")
+                rubric_dict = json.loads(rubric) if isinstance(rubric, str) else rubric
+                if isinstance(rubric_dict, dict):
+                    st.table(pd.DataFrame({"Points": list(rubric_dict.keys()), "Description": list(rubric_dict.values())}))
+                else:
+                    st.markdown(f"```{rubric}```")
             except Exception:
-                st.markdown(f"```\n{rubric}\n```")
-            
+                st.markdown(f"```{rubric}```")
+
             st.markdown("#### Student Answer:")
             st.markdown(f"""{student_answer}""")
-            
+
             st.markdown("#### Key Element Matching:")
-            if isinstance(key_element_matching, str):
-                key_element_matching_lines = key_element_matching.split("\n")
-                for line in key_element_matching_lines:
-                    st.markdown(f"{line.strip()}")
-            else:
-                st.markdown("No key element matching details available.")
-            
+            try:
+                if isinstance(key_element_matching, str):
+                    match_data = json.loads(key_element_matching)
+                else:
+                    match_data = key_element_matching
+
+                if isinstance(match_data, list) and all(isinstance(item, dict) for item in match_data):
+                    st.table(pd.DataFrame(match_data))
+                else:
+                    st.markdown("```" + str(match_data) + "\n```")
+
+            except Exception as e:
+                st.markdown(f"Error displaying key elements:\n```{e}\n```)\n")
+
             st.markdown("#### Explanation:")
             st.markdown(f"""{explanation}""")
             st.markdown(f"#### Score: **{score}**")
@@ -110,5 +126,6 @@ def display(df, student_id):
     total_marks = student_data["Total_Marks_Allocation"].iloc[0]
     total_score = student_data["Total_Score"].iloc[0]
     st.markdown(f"#### Total Score: {total_score}/{total_marks}")
+
 
 
