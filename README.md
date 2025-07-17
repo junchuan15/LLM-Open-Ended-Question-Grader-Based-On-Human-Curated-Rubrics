@@ -46,7 +46,7 @@ pip install -r requirements.txt
 
 ---
 
-### **2. Configuring the OpenAI API Key**  
+### **2. Configure OpenAI API Key**  
 
 To use the OpenAI API for grading responses, you must obtain an API key and configure it in the project. Follow these steps:
 
@@ -69,7 +69,7 @@ OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 ---
 
-### **3. Running the Streamlit Application**  
+### **3. Run the Streamlit Application**  
 
 After setting up the environment and API key, start the application by running the following command:
 
